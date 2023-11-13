@@ -27,29 +27,55 @@ export default function RegistrationForm (){
                 param === '+' ?  setStep(step + 1) : setStep(step - 1)
     }
 
-    async function formSaver(e) {
-        e.preventDefault();
-        setMessage('');
-      
-        const formData = new FormData(e.target);
-      
-        try {
-          const request = await axios.post('http://localhost:3333/registration', formData);
-          console.log(request.data);
-          setMessage(request.data.status);
-        } catch (e) {
-          // console.log(e)
-          if (e.response.status === 409) {
-            setStep(1);
-          }
-          if (e.response.status === 410) {
-            setStep(2);
-          }
-          setMessage(e.response?.data);
+
+    async function formSaver (e){
+        e.preventDefault()
+        setMessage('')
+       const sendData = new FormData(e.target);
+
+       for (const key in formData) {
+        sendData.append(key, formData[key]);
+    }
+
+
+       console.log(formData)
+
+        try{
+            const request = await axios.post('http://localhost:3333/registration', sendData )
+            console.log(request)
+            setMessage(request.data.status)
+        } catch(e) {
+            // console.log(e)
+            if(e.response.status === 409) {setStep(1)}
+            if(e.response.status === 410) {setStep(2)}
+            setMessage(e.response?.data)
         }
-      }
+
+    }
 
 
+
+    // async function formSaver(e) {
+    //     e.preventDefault();
+    //     setMessage('');
+      
+    //     const formData = new FormData(e.target);
+      
+    //     try {
+    //       const request = await axios.post('http://localhost:3333/registration', formData);
+    //       console.log(request.data);
+    //       setMessage(request.data.status);
+    //     } catch (e) {
+    //       // console.log(e)
+    //       if (e.response.status === 409) {
+    //         setStep(1);
+    //       }
+    //       if (e.response.status === 410) {
+    //         setStep(2);
+    //       }
+    //       setMessage(e.response?.data);
+    //     }
+    //   }
 
     return(
         <div className="regFormContainer">

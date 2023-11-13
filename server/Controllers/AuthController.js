@@ -21,21 +21,7 @@ class AuthController {
 
     static async Registration  (req, res){
         try{
-            // console.log(req.files);
-
             const {name, email, password, password2, dogname, breed, age, gender, description, city} = req.body
-
-
-            if (req.files.photos) {
-                const photosArr = [];
-                req.files.photos.forEach(a => {
-                    const relativePath = path.relative(__dirname, a.path);
-                    photosArr.push(relativePath.replace(/\\/g, '/')); 
-                });
-                console.log(photosArr);
-               
-            }
-
 
             if(!name || !email || !password || !password2) {return res.status(409).send('Empty fields')}
             if(!dogname || !breed || !age || !gender || !description || !city) {return res.status(410).send('Empty fields')}
@@ -45,10 +31,6 @@ class AuthController {
             if(password.length < 5) {return res.status(409).send('Password length is less then 5')}
             if(password !== password2) {return res.status(409).send('Password mismatch')}
 
-
-   
-    
-
             //Hashing Password
             async function hashPass () {
                 const pass = await bcrypt.hash(password, 10)
@@ -56,7 +38,16 @@ class AuthController {
             }
             const finalPassword = await hashPass()
 
-            await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city)
+            const photosArr = [];
+            if (req.files.photos) {
+                req.files.photos.forEach(a => {
+                    const relativePath = path.relative(__dirname, a.path);
+                    photosArr.push(relativePath.replace(/\\/g, '/')); 
+                });
+                console.log(photosArr);
+            }
+
+            await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city, photosArr)
 
 
 

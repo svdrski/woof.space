@@ -1,0 +1,171 @@
+.login-background {
+    background-image: url(../../Img/loginBack.jpg);
+    height: calc(100vh - 60px);
+    background-size: cover;
+    border-radius: 50px;
+    margin: 30px;
+}
+
+
+.headerBlock{
+    background-color: #fff;
+    height: 60px;
+    border-radius: 0 0 18px 18px;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.headerBlock p h2 h3 {
+    margin:  0;
+}
+
+
+.regFormContainer {
+    width: 350px;
+    position: absolute;
+    top: 0;
+    right: 9%;
+}
+
+
+.formArea{
+    display: flex;
+    background-color: #fff;
+    border-radius: 18px;
+    margin: 3px 0;
+    padding: 20px;
+}
+
+.formArea form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+}
+
+.formArea label {
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.formArea .inp {
+    height: 44px;
+    border-radius: 18px;
+    background-color: #EDEEF2;
+    border: none;
+    width: calc(100% - 40px);
+    font-size: 15px;
+    padding: 0 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+
+
+
+.formArea select {
+    appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+    height: 44px;
+    border-radius: 18px;
+    margin-bottom: 16px;
+    width: 100% !important;
+    padding: 0 30px 0 20px !important;
+    font-weight: 600;
+    border: 1px solid #EDEEF2 !important;
+    background: url('../../Img/arrow.svg') no-repeat right center / 46px 7px;
+}
+
+
+.formArea p {
+    display: inline-block;
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 15px;
+    margin-left: 7px;
+    color: #8e2400;
+}
+
+.formArea span {
+    display: flex;
+}
+
+.formNextbtn{
+    width: 40%;
+    height: 39px;
+    border-radius: 3333px;
+    border: 1px solid #93929A;
+    background: none;
+    color: #3a3a3a;
+    margin-left: auto;
+}
+
+.navbtns{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.formPrevbtn{
+    border: none;
+    background: none;
+    color: #808080;
+}
+
+.formPrevbtn:hover, .formNextbtn {
+    cursor: pointer;
+}
+
+
+
+.selectGenderbtn{
+    padding: 13px 24px;
+    border-radius: 18px;
+    border: none;
+    font-weight: 600;
+    margin-right: 10px;
+    margin-bottom: 16px;
+}
+
+.formArea .on {
+    background-color: #323232;
+    color: #fff;
+}
+
+.selectGenderbtn:hover {
+cursor: pointer;
+}
+
+.tarea{
+    height: 80px !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300 !important;
+    padding: 20px !important;
+}
+
+.submitreg{
+    background-color: #4F00CF;
+    color: #fff;
+    border: none;
+    font-weight: 600;
+}
+
+#autocomplete{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+
+.css-13cymwt-control{
+    border-radius: 18px !important;
+    height: 44px;
+}
+
+.css-t3ipsp-control{
+    border-radius: 18px !important;
+    height: 44px;
+
+}

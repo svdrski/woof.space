@@ -1,0 +1,126 @@
+.container{
+    height: calc(100vh - 40px);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.container button{
+    color: #fff;
+    border-radius: 2222px;
+    width: 187px;
+    font-size: 16px;
+    height: 53px;
+    font-weight: 600;
+    border: none;
+    flex-shrink: 0;
+    background: #4F00CF;
+}
+
+.container button:hover{
+    cursor: pointer;
+}
+
+.block-area{
+    height: 100%;
+    width: calc(50% - 2px);
+    border-radius: 50px;
+}
+
+
+.left-side{
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+
+.right-side{
+    background-image: url('../../Img/dog.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.container h1{
+    font-size: 90px;
+    margin: 0 0 20px 0;
+    font-weight: 800;
+    text-align: center;
+    max-width: 410px;
+}
+
+.container h2{
+    text-align: center;
+    font-weight: 500;
+    max-width: 410px;
+    margin-bottom: 40px;
+}
+
+
+.container a {
+    color: #fff;
+    font-weight: 600;
+    margin: 0 6px;
+    font-size: 19px;
+}
+
+.container a:hover{
+    text-decoration: underline;
+}
+
+
+
+
+
+nav{
+    display: flex;
+    flex-direction: row-reverse;
+    margin: 5% 5% 0 0;
+}
+
+@media (max-width: 1030px) {
+    .block-area {
+      width: 100%;
+      height: 50%;
+      border-radius: 18px;
+    }
+
+    .container{
+        flex-direction: column-reverse;
+    }
+    
+    .container h1{
+        font-size: 44px;    }
+    
+    .container h2{
+        font-size: 21px;
+        max-width: 320px;
+    }
+
+    .right-side{
+        height: 40%;
+    }
+
+    .left-side{
+        height: calc(60% - 3px);
+    }
+  }
+
+
+  @media (max-width: 380px) {
+
+  .container h1{
+    font-size: 30px;
+  }
+
+  .container h2{
+    font-size: 18px;
+    max-width: 270px;
+  }
+
+}

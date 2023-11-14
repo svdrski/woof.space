@@ -40,3 +40,74 @@
 a{
   text-decoration: none;
 }
+
+
+
+header{
+  background-color: #fff;
+  width: 99%;
+  display: flex;
+  margin: 0 auto;
+  height: 70px;
+  border-radius: 0 0 40px 40px;
+  align-items: center;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+
+.leftnav{
+  display: flex;
+}
+
+
+.leftnav nav{
+  display: flex;
+  align-items: center;
+  margin-left: 30px !important;
+  flex-direction: row;
+  margin: 0;
+}
+
+
+.leftnav a {
+  color: #191919;
+  margin-right: 15px;
+  font-size: 17px;
+}
+
+
+.headerlogo{
+  height: 40px;
+}
+
+.rightnav{
+  display: flex;
+    margin-left: auto;
+}
+
+h3{
+  margin: 0;
+}
+
+
+.profileimage{
+      height: 45px;
+    width: 45px;
+    border-radius: 222px;
+    object-fit: cover;
+    margin-left: 11px;
+    margin-left: 15px;
+}
+
+.logout{
+  background: none;
+  border: none;
+  color: #848484;
+  margin: 0;
+  padding: 0;
+}
+
+.logout:hover{
+  cursor: pointer;
+}

@@ -16,28 +16,41 @@ class AuthController {
         res.send(users)
     }
 
-    static async GetLoggedInUser (req, res) {
-
+    static Auth (req, res) {
         const token = req.cookies.token
-        if(!token) {return res.status(401).send('Unauthorized')}
-        jwt.verify(token, 'KEY', async (err, result)=>{
-            if(err) { return res.status(403).send('Token verification failed')}
-            const user = await AuthModel.CheckEmail(result.email)
-            res.status(200).send(user)
+        console.log(token)
+        jwt.verify(token, 'KEY', (err, decoded)=>{
+            if(err){res.status(401).send('Auth failed')}
+            res.status(201).send('Success')
         })
+    }
+    // static async GetLoggedInUser (req, res) {
+
+    //     const token = req.cookies.token
+    //     if(!token) {return res.status(401).send('Unauthorized')}
+    //     jwt.verify(token, 'KEY', async (err, result)=>{
+    //         if(err) { return res.status(403).send('Token verification failed')}
+    //         const user = await AuthModel.CheckEmail(result.email)
+    //         res.status(200).send(user)
+    //     })
          
 
-    }
+    // }
 
     static async Login (req, res)  {
         const {email, password} = req.body
+        console.log(email, password)
         const user = await AuthModel.CheckEmail(email)
         if(!email || !password) {return res.status(409).send('Empty fields')}
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
+        const photos = await AuthModel.GetPhotos(email)
+        const result = [...photos, ...user]
+        console.log(result)
         res.cookie('token', token);
-        res.status(200).send('success')
+        res.cookie('data', result)
+        res.status(200).send(result)
     }
 
 
@@ -78,8 +91,11 @@ class AuthController {
 
 
         } catch (e) {res.send('Error ' + e)}
+    }
 
-
+    static LogOut (req, res) {
+    res.clearCookie('token')
+    res.send('Logout successful');
     }
 }
 

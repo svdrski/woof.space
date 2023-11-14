@@ -33,6 +33,12 @@ class AuthModel {
         return users;
     }
 
+    static async GetPhotos (email){
+        try{
+            const photos = await Photos.find({email})
+            return photos
+        } catch (e) {return e}
+    }
 
     static async CheckEmail(email){
         try{

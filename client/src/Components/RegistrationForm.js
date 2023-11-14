@@ -54,7 +54,6 @@ export default function RegistrationForm (){
              await axios.post('http://localhost:3333/registration', sendData,{
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
-                
             })
             navigate('/search')
         } catch(e) {

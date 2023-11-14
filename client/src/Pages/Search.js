@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { cookies } from '../App';
 import axios from 'axios';
+import Header from '../Components/Header';
+
 
 export default function Search () {
 
@@ -13,22 +15,15 @@ export default function Search () {
 
 
 
-    
-    useEffect( ()=>{
-        const myCookieValue = cookies.get('token');
-        if(!myCookieValue) {return navigate('/login')}
-        async function get() {
-           const data = await axios.post('http://localhost:3333/user', null,  {
-            headers: {"Contet-Type" : "application/json"},
-            withCredentials: true
-        })
-           console.log(data.data[0])
-        }
-        get()
-    }, [])
+
 
 
     return(
+        <>
+        <Header/>
         <h1 style={{color:"#fff"}}>Search</h1>
+        </>
     )
 }
+
+

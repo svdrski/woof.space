@@ -2,8 +2,11 @@ import axios from 'axios'
 import { useState } from 'react'
 import errimg from '../Img/err.svg'
 import RegistrationSteps from './RegistrationSteps'
+import { Link, useNavigate } from 'react-router-dom'
 
 export default function RegistrationForm (){
+
+    const navigate = useNavigate();
 
     const [message, setMessage] = useState('')
     const [formData, setFormData] = useState( {
@@ -24,9 +27,17 @@ export default function RegistrationForm (){
     function stepBrowse(e, param) {
         e.preventDefault()
         if( step === 1 && (!formData.name || !formData.email || !formData.password || !formData.password2)) {return setMessage('Empty fields')} else if(step === 1) {setMessage()}
-                param === '+' ?  setStep(step + 1) : setStep(step - 1)
+        param === '+' ?  setStep(step + 1) : setStep(step - 1)
+        setSelectedFiles([])
     }
 
+
+    const [selectedFiles, setSelectedFiles] = useState([]);
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        setSelectedFiles(files);
+      };
 
     async function formSaver (e){
         e.preventDefault()
@@ -38,12 +49,14 @@ export default function RegistrationForm (){
     }
 
 
-       console.log(formData)
-
         try{
-            const request = await axios.post('http://localhost:3333/registration', sendData )
-            console.log(request)
-            setMessage(request.data.status)
+            setSelectedFiles([])
+             await axios.post('http://localhost:3333/registration', sendData,{
+                headers: {"Contet-Type" : "application/json"},
+                withCredentials: true
+                
+            })
+            navigate('/search')
         } catch(e) {
             // console.log(e)
             if(e.response.status === 409) {setStep(1)}
@@ -52,30 +65,6 @@ export default function RegistrationForm (){
         }
 
     }
-
-
-
-    // async function formSaver(e) {
-    //     e.preventDefault();
-    //     setMessage('');
-      
-    //     const formData = new FormData(e.target);
-      
-    //     try {
-    //       const request = await axios.post('http://localhost:3333/registration', formData);
-    //       console.log(request.data);
-    //       setMessage(request.data.status);
-    //     } catch (e) {
-    //       // console.log(e)
-    //       if (e.response.status === 409) {
-    //         setStep(1);
-    //       }
-    //       if (e.response.status === 410) {
-    //         setStep(2);
-    //       }
-    //       setMessage(e.response?.data);
-    //     }
-    //   }
 
     return(
         <div className="regFormContainer">
@@ -86,7 +75,7 @@ export default function RegistrationForm (){
             <div className="formArea">
                 <form onSubmit={formSaver}>
                     
-                    <RegistrationSteps step={step} formData={formData} setFormData={setFormData}/>
+                    <RegistrationSteps step={step} formData={formData} setFormData={setFormData} func={{selectedFiles, setSelectedFiles, handleFileChange}}/>
                      {message && <span><img src={errimg}/> <p>{message}</p></span>}
                      <span className='navbtns'>
                         {step !== 1 && <button onClick={(e)=>{stepBrowse(e, '-')}} className='formPrevbtn'>Back</button>}
@@ -95,9 +84,12 @@ export default function RegistrationForm (){
                      </span>
 
                 </form>
-
-
             </div>
+
+            <Link className='loginLInks' to='/login'>Already have account ? Login</Link>
+
         </div>
+
+        
     )
 }

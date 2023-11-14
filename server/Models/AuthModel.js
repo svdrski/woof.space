@@ -24,12 +24,15 @@ const User = mongoose.model('users', userSchema);
 const Photos = mongoose.model('photos', photosSchema)
 
 
+
+
 class AuthModel {
 
     static async GetAll(){
         const users = await User.find()
         return users;
     }
+
 
     static async CheckEmail(email){
         try{

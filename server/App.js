@@ -1,14 +1,19 @@
 const express = require('express')
 const { connectToDb } = require('./Config/db.js');
 const Router = require('./Routes/Router.js')
+const cookieParser = require('cookie-parser');
 const path = require('path');
 const cors = require('cors');
 const App = express()
+App.use(cookieParser());
 App.use(express.json())
 App.use(express.urlencoded({ extended: true }));
 App.use(express.static(path.join(__dirname, './')));
 
-App.use(cors())
+App.use(cors({ 
+    origin: 'http://localhost:3001', 
+    credentials: true,
+  }))
 App.use(Router)
 const port = 3333
 

@@ -169,3 +169,81 @@ cursor: pointer;
     height: 44px;
 
 }
+
+
+.previewImg{
+    width: calc(50% - 8px);
+    height: 220px;
+    object-fit: cover;
+    margin-bottom: 16px;
+    border-radius: 18px;
+}
+
+.imgcontainer{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.photoinput {
+    width: 48%;
+}
+
+
+
+
+.photolabel{
+    box-sizing: border-box;
+    width: calc(50% - 8px);
+    height: 220px;
+    margin: 0 !important;
+    border-radius: 18px;
+    border: 2px dashed;
+    border-color: #BDBDBD;
+    background: url('../../Img/Plus1.svg') no-repeat right center / 100% 97px;
+}
+
+
+.photolabel:hover {
+    cursor: pointer;
+}
+
+
+.loginLInks{
+    font-size: 13px;
+    display: inline-block;
+    color: #b0b0b0;
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.loginLInks:hover{
+    cursor: pointer;
+    color: #fff;
+}
+
+
+
+@media (max-width: 500px) {
+
+    .regFormContainer{
+        width: 100%;
+        right: 0;
+    }
+
+
+    .login-background{
+    background-image: none;
+    margin-bottom: 50px;
+    background-color: #000;
+    background-size: cover;
+    border-radius: 0;
+    margin: 0;
+    }
+
+    .loginLInks{
+        margin-bottom: 60px;
+    }
+
+}

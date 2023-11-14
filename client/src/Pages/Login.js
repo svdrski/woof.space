@@ -1,6 +1,13 @@
+import LoginForm from "../Components/LoginForm"
 export default function Login (){
 
+
+
+    
     return(
-        <>REg</>
+        <>
+        <LoginForm/>
+        <div className='login-background'></div>
+        </>
     )
 }

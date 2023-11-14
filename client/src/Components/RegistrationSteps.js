@@ -1,17 +1,20 @@
 import AutoCompleteField from './CityAutocomplete'
 import AutoCompleteBreed from "./BreedAutocomplete";
+import { useState } from 'react';
 
 
-export default function RegistrationSteps ({step, formData, setFormData}){
+export default function RegistrationSteps ({step, formData, setFormData, func}){
 
     function changer(e){
         e.preventDefault()
         console.log(formData)
         setFormData({...formData, [e.target.name]: e.target.value})
     }
-
-
-
+    
+    const {selectedFiles, handleFileChange} = func
+      
+      
+    
     return(
     <>
 
@@ -55,7 +58,14 @@ export default function RegistrationSteps ({step, formData, setFormData}){
                     </>
                  ) : step === 3 ? (
                     <>
-                            <input type="file" name='photos' multiple/>
+
+                    <div className='imgcontainer'>
+                    <label htmlFor="photos" className="photolabel"></label>
+                    <input type="file" style={{ display: 'none' }} onChange={handleFileChange} name="photos" id="photos" multiple/>
+                        {selectedFiles.map((file, index) => (
+                        <img className='previewImg' key={index} src={URL.createObjectURL(file)} alt={`Preview ${index}`} />
+                        ))}
+                    </div>
 
                     </>
                  ) : null 

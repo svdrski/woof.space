@@ -2,6 +2,7 @@ const AuthModel = require('../Models/AuthModel.js')
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const path = require('path');
+const jwt = require('jsonwebtoken')
 
 
 
@@ -15,7 +16,29 @@ class AuthController {
         res.send(users)
     }
 
+    static async GetLoggedInUser (req, res) {
 
+        const token = req.cookies.token
+        if(!token) {return res.status(401).send('Unauthorized')}
+        jwt.verify(token, 'KEY', async (err, result)=>{
+            if(err) { return res.status(403).send('Token verification failed')}
+            const user = await AuthModel.CheckEmail(result.email)
+            res.status(200).send(user)
+        })
+         
+
+    }
+
+    static async Login (req, res)  {
+        const {email, password} = req.body
+        const user = await AuthModel.CheckEmail(email)
+        if(!email || !password) {return res.status(409).send('Empty fields')}
+        if(!user.length) {return res.status(409).send('Email not found')}
+        if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
+        const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
+        res.cookie('token', token);
+        res.status(200).send('success')
+    }
 
 
 
@@ -48,10 +71,12 @@ class AuthController {
             }
 
             await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city, photosArr)
-
-
-
             
+            const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
+            res.cookie('token', token);
+            res.status(200).send('success')
+
+
         } catch (e) {res.send('Error ' + e)}
 
 

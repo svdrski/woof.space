@@ -1,15 +1,13 @@
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import errimg from '../Img/err.svg'
 import { Link, useNavigate } from 'react-router-dom'
 import { cookies } from '../App'
-
 
 export default function LoginForm (){
 
     const [message, setMessage] = useState('')
     const navigate = useNavigate();
-
 
     async function formSaver (e){
         e.preventDefault()
@@ -17,7 +15,7 @@ export default function LoginForm (){
 
         const data = Object.fromEntries(new FormData(e.target))
         try{
-             await axios.post('http://localhost:3333/login', data, {
+             const user = await axios.post('http://localhost:3333/login', data, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             } )

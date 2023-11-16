@@ -16,14 +16,20 @@ class AuthController {
         res.send(users)
     }
 
-    static Auth (req, res) {
+    static  Auth  (req, res) {
         const token = req.cookies.token
-        console.log(token)
-        jwt.verify(token, 'KEY', (err, decoded)=>{
-            if(err){res.status(401).send('Auth failed')}
-            res.status(201).send('Success')
+        jwt.verify(token, 'KEY',async (err, decoded)=>{
+            if(err){return res.status(401).send('Auth failed')}
+            console.log(decoded.email)
+            const user = await AuthModel.CheckEmail(decoded.email)
+            const photos = await AuthModel.GetPhotos(decoded.email)
+            const result = [...photos, ...user]
+            res.status(201).send(result)
         })
     }
+
+
+
     // static async GetLoggedInUser (req, res) {
 
     //     const token = req.cookies.token
@@ -47,10 +53,9 @@ class AuthController {
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
         const photos = await AuthModel.GetPhotos(email)
         const result = [...photos, ...user]
-        console.log(result)
         res.cookie('token', token);
-        res.cookie('data', result)
-        res.status(200).send(result)
+        // res.cookie('data', result)
+        res.status(200).send('ok')
     }
 
 
@@ -95,6 +100,7 @@ class AuthController {
 
     static LogOut (req, res) {
     res.clearCookie('token')
+    res.clearCookie('data')
     res.send('Logout successful');
     }
 }

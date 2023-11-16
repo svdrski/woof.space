@@ -11,7 +11,7 @@ App.use(express.urlencoded({ extended: true }));
 App.use(express.static(path.join(__dirname, './')));
 
 App.use(cors({ 
-    origin: 'http://localhost:3001', 
+    origin: 'http://localhost:3000', 
     credentials: true,
   }))
 App.use(Router)

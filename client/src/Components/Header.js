@@ -3,10 +3,13 @@ import logo from '../Img/logo.svg'
 import { useState, useEffect } from 'react'
 import axios from 'axios';
 import { cookies } from '../App';
+import { useMyContext } from './UserDataContext';
+
+
 export default function Header(){
 
     const navigate = useNavigate();
-    const [userData, setuserData] = useState({})
+    const {userdata, updateData} = useMyContext()
 
 
 
@@ -17,10 +20,12 @@ export default function Header(){
     } 
 
 
-    useEffect( ()=>{
-        const UserData = cookies.get('data')
-        setuserData(UserData)
-    }, [])
+
+    console.log(userdata)
+    // useEffect( ()=>{
+    //     const UserData = cookies.get('data')
+    //     setuserData(UserData)
+    // }, [])
 
 
 
@@ -38,10 +43,10 @@ export default function Header(){
 
             <span className='rightnav'>
                 <div style={{textAlign:'right'}}>
-                <h3>{userData[1]?.dogname}</h3>
+                <h3>{}</h3>
                 <button className='logout' onClick={logOut}>Log out</button>
                 </div>
-               {userData &&  <img className='profileimage' src={`http://localhost:3333${userData[0]?.photos[0].slice(2, userData[0]?.photos[0].length)}`}></img>}
+               {userdata &&  <img className='profileimage' src={`http://localhost:3333${userdata[0]?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
             </span>
         </header>
     )

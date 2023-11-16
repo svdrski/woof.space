@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+import { useMyContext } from './UserDataContext';
 
 const Checker = ({ children }) => {
   const [tokenValid, setTokenValid] = useState(false);
   const navigate = useNavigate();
-
+  const {userdata, updateData} = useMyContext()
 
 
   useEffect(() => {
@@ -17,8 +17,9 @@ const Checker = ({ children }) => {
             headers: {"Contet-Type" : "application/json"},
             withCredentials: true
         } )
-        console.log(response)
+        // console.log(response.data)
         if (response.status === 201) {
+          updateData(response.data)
           setTokenValid(true);
         } else {
           navigate('/login'); 

@@ -10,26 +10,28 @@ const userSchema = new mongoose.Schema({
   age: String,
   gender:String,
   description: String,
-  city: String
+  city: String,
+  photos: [String]
 
 });
 
-const photosSchema = new  mongoose.Schema({
-    email: String, 
-    photos: [String]
-})
+// const photosSchema = new  mongoose.Schema({
+//     email: String, 
+//     photos: [String]
+// })
 
 
 const User = mongoose.model('users', userSchema);
-const Photos = mongoose.model('photos', photosSchema)
+// const Photos = mongoose.model('photos', photosSchema)
 
 
 
 
 class AuthModel {
 
-    static async GetAll(){
-        const users = await User.find()
+    static async GetAll(email){
+        const users = await User.find({email: {$ne: email} })
+        console.log(users)
         return users;
     }
 
@@ -51,13 +53,13 @@ class AuthModel {
     static async Registration ( password, name, email,dogname, breed, age, gender, description, city, photosArr){
         console.log('sss')
         try{
-            const newUser = new User({password, name, email,dogname, breed, age, gender, description,city})
+            const newUser = new User({password, name, email,dogname, breed, age, gender, description,city, photos: photosArr})
             const savedUser = await newUser.save()
             console.log(savedUser)
 
-            const newPhotos = new Photos({email, photos: photosArr})
-            const savedPhotos = await newPhotos.save()
-            console.log(savedPhotos)
+            // const newPhotos = new Photos({email, photos: photosArr})
+            // const savedPhotos = await newPhotos.save()
+            // console.log(savedPhotos)
             return savedUser
         } catch (e) {return e}
        

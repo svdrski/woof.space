@@ -11,20 +11,25 @@ class AuthController {
 
 
     static async AllUsers(req, res) {
-        const users = await AuthModel.GetAll()
-        console.log(users)
-        res.send(users)
+        const token = req.cookies.token
+        console.log(token)
+        jwt.verify(token, 'KEY',async (err, decoded)=>{
+            if(err){return res.status(401).send('Auth failed')}
+            console.log(decoded)
+            const users = await AuthModel.GetAll(decoded.email)
+            res.status(201).send(users)
+        })
+        // const users = await AuthModel.GetAll()
+        // console.log(users)
+        // res.send(users)
     }
 
     static  Auth  (req, res) {
         const token = req.cookies.token
         jwt.verify(token, 'KEY',async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
-            console.log(decoded.email)
             const user = await AuthModel.CheckEmail(decoded.email)
-            const photos = await AuthModel.GetPhotos(decoded.email)
-            const result = [...photos, ...user]
-            res.status(201).send(result)
+            res.status(201).send(...user)
         })
     }
 
@@ -51,8 +56,6 @@ class AuthController {
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
-        const photos = await AuthModel.GetPhotos(email)
-        const result = [...photos, ...user]
         res.cookie('token', token);
         // res.cookie('data', result)
         res.status(200).send('ok')

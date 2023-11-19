@@ -26,7 +26,7 @@ function App() {
     <Route path='/'  element={<Homepage/>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/registration' element={<Registration/>}/>
-    <Route path='/search' element={<Search/>}/>
+    <Route path='/search' element={<Checker><Search/></Checker>}/>
     </Routes>
     </UserDataContext>
 

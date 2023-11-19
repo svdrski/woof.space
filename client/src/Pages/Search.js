@@ -12,6 +12,7 @@ export default function Search () {
 
     const navigate = useNavigate();
     const [breed, setBreed] = useState('')
+    const [dogsList, setDogsList] = useState([])
 
     const [currentDog, setCurrentDog] = useState({
         dogName: 'Chapa',
@@ -27,11 +28,19 @@ export default function Search () {
 
     useEffect(()=>{
         async function getUsers() {
-            const users = await axios.get('http://localhost:3333/users')
-            console.log(users)
-
+            try{
+                const users = await axios.get('http://localhost:3333/users', {
+                    headers: {"Contet-Type" : "application/json"},
+                    withCredentials: true
+                })
+                setDogsList(users.data)
+                // console.log(dogsList[0])
+                setCurrentDog(dogsList[0])
+            } catch(e) {console.log('Error ', e)}
         }
         getUsers()
+
+        console.log(currentDog)
     },[])
 
 
@@ -57,8 +66,8 @@ export default function Search () {
 
             <div className='cardDescription'>
                 <div className='images'>
-                    <img className='previewImg' src={currentDog.img}/>
-                    <img className='previewImg' src={currentDog.img}/>
+                    <img className='previewImg' src={currentDog.photos[1] ? currentDog.photos[1] : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
+                    <img className='previewImg' src={currentDog.photos[2]}/>
                 </div>
 
 

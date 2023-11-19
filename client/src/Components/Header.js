@@ -19,13 +19,8 @@ export default function Header(){
         navigate('/login')
     } 
 
-
-
     console.log(userdata)
-    // useEffect( ()=>{
-    //     const UserData = cookies.get('data')
-    //     setuserData(UserData)
-    // }, [])
+
 
 
 
@@ -43,10 +38,10 @@ export default function Header(){
 
             <span className='rightnav'>
                 <div style={{textAlign:'right'}}>
-                <h3>{}</h3>
+                <h3>{userdata.dogname}</h3>
                 <button className='logout' onClick={logOut}>Log out</button>
                 </div>
-               {userdata &&  <img className='profileimage' src={`http://localhost:3333${userdata[0]?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
+               {userdata &&  <img className='profileimage' src={`http://localhost:3333${userdata?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
             </span>
         </header>
     )

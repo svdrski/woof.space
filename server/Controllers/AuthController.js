@@ -1,4 +1,4 @@
-const AuthModel = require('../Models/AuthModel.js')
+const {AuthModel} = require('../Models/AuthModel.js')
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const path = require('path');
@@ -12,10 +12,10 @@ class AuthController {
 
     static async AllUsers(req, res) {
         const token = req.cookies.token
-        console.log(token)
+        // console.log(token)
         jwt.verify(token, 'KEY',async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
-            console.log(decoded)
+            // console.log(decoded)
             const users = await AuthModel.GetAll(decoded.email)
             res.status(201).send(users)
         })
@@ -88,7 +88,7 @@ class AuthController {
                     const relativePath = path.relative(__dirname, a.path);
                     photosArr.push(relativePath.replace(/\\/g, '/')); 
                 });
-                console.log(photosArr);
+                // console.log(photosArr);
             }
 
             await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city, photosArr)

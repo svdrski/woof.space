@@ -1,55 +1,108 @@
 import './Css/Search.css'
 import AutoCompleteBreed from '../Components/BreedAutocomplete';
 
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { cookies } from '../App';
 import axios from 'axios';
 import Header from '../Components/Header';
 import SearchCard from '../Components/SearchCard';
+import { useMyContext } from '../Components/UserDataContext';
+import RangeSlider from '../Components/AgeRange';
 
 export default function Search () {
 
+    const {userdata} = useMyContext()
+
+
     const navigate = useNavigate();
-    const [breed, setBreed] = useState('')
+    const [breed, setBreed] = useState(null)
     const [dogsList, setDogsList] = useState([])
-
-    const [currentDog, setCurrentDog] = useState({
-        dogName: 'Chapa',
-        age: '5',
-        breed: 'Bulldog',
-        city: 'City',
-        img: 'http://localhost:3333/uploads/2d27f55f-41bb-4c96-9379-01b8fde64010brooke-cagle-Ntm4C2lCWxQ-unsplash.jpg',
-        description: 'Energetic and friendly Labrador Retriever named Bailey is seeking a playful companion for active walks and fun adventures. Enjoys attention, loves toys, and is always ready for new friendships with other four-legged pals!'
-    })
+    const [currentDog, setCurrentDog] = useState(null)
+    const [currentCount, setCount] = useState(0)
+    const [rangeValues, setRangeValues] = useState([0, 20]);
 
 
+
+    useEffect(() => {
+        setCurrentDog(dogsList[currentCount]);
+    }, [dogsList, currentCount]);
+
+
+    async function getUsers() {
+        try{
+            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues}, {
+                headers: {"Contet-Type" : "application/json"},
+                withCredentials: true
+            })
+            console.log(users.data)
+            setDogsList(users.data);
+
+        } catch(e) {console.log('Error ', e)}
+    }
 
 
     useEffect(()=>{
-        async function getUsers() {
-            try{
-                const users = await axios.get('http://localhost:3333/users', {
-                    headers: {"Contet-Type" : "application/json"},
-                    withCredentials: true
-                })
-                setDogsList(users.data)
-                // console.log(dogsList[0])
-                setCurrentDog(dogsList[0])
-            } catch(e) {console.log('Error ', e)}
-        }
         getUsers()
-
-        console.log(currentDog)
     },[])
+
+
+
+
+    async function showMatches () {
+        try{
+            const users = await axios.post('http://localhost:3333/search/matches',null, {
+                headers: {"Contet-Type" : "application/json"},
+                withCredentials: true
+            })
+            console.log(users.data)
+        } catch(e) {console.log('Error ', e)}
+    }
+
+
+
+
+    async function handlelike() {
+
+        setCount((prevCount) => {
+            setCurrentDog(dogsList[prevCount + 1]);
+            return prevCount + 1;
+          });
+
+        const regLike = await axios.post('http://localhost:3333/like', {user: userdata.email, opponent: currentDog.email} )
+
+
+
+        console.log(currentDog.email)
+        console.log(userdata.email)
+    }
+
+
+    async function handledislike() {
+        setCount((prevCount) => {
+            setCurrentDog(dogsList[prevCount + 1]);
+            return prevCount + 1;
+          });
+
+          const regDislike = await axios.post('http://localhost:3333/dislike', {user: userdata.email, opponent: currentDog.email} )
+
+    }
+
+
+
 
 
     return(
         <>
         <Header/>
+        {/* <button onClick={()=>{console.log(dogsList)}}>FFF</button>
+        <button onClick={()=>{console.log(currentDog)}}>FFF</button> */}
+
+
         <div className='blockContainer'>
 
-            <div className='searchContainer'>
+           
+           
+           <div className='searchContainer'>
                 <h2>Search in City</h2>
                 <p className='attempts'>You made <b>33</b> attempts</p>
                 <div className='filtersBox'>
@@ -57,25 +110,28 @@ export default function Search () {
                 <AutoCompleteBreed setFormData={setBreed} formData={breed}/>
                 <label>Age</label>
                 <div className='selectorAge'>
+                <RangeSlider rangeValues={rangeValues} setRangeValues={setRangeValues}/>
                 </div>
-                <button className='findbtn'>Find</button>
+                <button onClick={getUsers} className='findbtn'>Find</button>
                 </div>
             </div>
 
-             <SearchCard data={currentDog}/>
+            {currentDog ? (
+                <>
+             <SearchCard data={currentDog} like={handlelike} dislike={handledislike}/>
 
             <div className='cardDescription'>
                 <div className='images'>
-                    <img className='previewImg' src={currentDog.photos[1] ? currentDog.photos[1] : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
-                    <img className='previewImg' src={currentDog.photos[2]}/>
+                    <img className='previewImg' src={currentDog.photos[1] ? `http://localhost:3333/${currentDog.photos[1].slice(2, currentDog.photos[1].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
+                    <img className='previewImg' src={currentDog.photos[2] ? `http://localhost:3333/${currentDog.photos[2].slice(2, currentDog.photos[2].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
                 </div>
-
-
                 <h3>Description</h3>
                 <p>{currentDog.description}</p>
+                <button onClick={showMatches}>SHowmatches</button>
             </div>
-
-
+            </>
+           ) : <div className='noresults'>                <button onClick={showMatches}>SHowmatches</button>
+           </div>}
 
         </div>
         </>

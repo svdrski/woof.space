@@ -15,14 +15,9 @@ const userSchema = new mongoose.Schema({
 
 });
 
-// const photosSchema = new  mongoose.Schema({
-//     email: String, 
-//     photos: [String]
-// })
 
 
-const User = mongoose.model('users', userSchema);
-// const Photos = mongoose.model('photos', photosSchema)
+ const User = mongoose.model('users', userSchema);
 
 
 
@@ -31,7 +26,7 @@ class AuthModel {
 
     static async GetAll(email){
         const users = await User.find({email: {$ne: email} })
-        console.log(users)
+        // console.log(users)
         return users;
     }
 
@@ -51,11 +46,10 @@ class AuthModel {
 
 
     static async Registration ( password, name, email,dogname, breed, age, gender, description, city, photosArr){
-        console.log('sss')
         try{
             const newUser = new User({password, name, email,dogname, breed, age, gender, description,city, photos: photosArr})
             const savedUser = await newUser.save()
-            console.log(savedUser)
+            // console.log(savedUser)
 
             // const newPhotos = new Photos({email, photos: photosArr})
             // const savedPhotos = await newPhotos.save()
@@ -66,4 +60,4 @@ class AuthModel {
     }
 }
 
-module.exports = AuthModel
+module.exports = {AuthModel, User}

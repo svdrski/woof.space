@@ -49,10 +49,11 @@
 }
 
 .selectorAge{
-    padding: 50px;
+    padding: 30px;    
     border: 1px solid;
     border-radius: 18px;
     border-color: hsl(0, 0%, 80%);
+    margin-bottom: 20px;
 }
 
 .searchContainer label {
@@ -72,16 +73,14 @@
 }
 
 .cardBox{
-    min-height: 530px;
-    min-width: 380px;
+    height: 530px;
+    width: 380px;
     background-size: cover !important;
     background-position: center !important;
     border-radius: 40px;
     display: flex;
     align-items: flex-end;
-    padding: 20px 30px;
     box-sizing: border-box;
-    justify-content: space-between;
     margin-left: 30px;
 }
 
@@ -166,6 +165,7 @@
 
 .cardDescription .images{
     display: flex;
+    min-width: 310px;
     justify-content: space-between;
 }
 
@@ -173,3 +173,46 @@
     color: #6d6d6d;
     margin-bottom: 0;
 }
+
+
+.gradient-overlay {
+    width: 100%;
+    min-height: 530px;
+    border-radius: 40px;
+    padding: 20px 30px;
+    background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,51,61,0.871608018207283) 16%, rgba(0,212,255,0) 53%);
+    display: flex;
+    box-sizing: border-box;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+  
+
+
+  .noresults{
+    background-image: url(../../Img/noresults.svg);
+    height: 400px;
+        width: 312px;
+        margin: 110px 0 0 110px;
+        background-size: cover;
+  }
+
+
+  .rc-slider-track, .rc-slider-tracks {
+    background-color: #4F00CF !important;
+  }
+
+  .rc-slider-handle{
+    background-color: rgb(79, 0, 207) !important;
+    border-color: rgb(79, 0, 207) !important;
+    opacity: 1 !important;
+  }
+
+
+  .agelabel{
+    box-sizing: content-box;
+    font-weight: 700;
+    font-size: 15px;
+    margin-left: -6px;
+    margin-bottom: 20px !important;
+  }

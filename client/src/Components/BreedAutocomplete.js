@@ -6,7 +6,6 @@ export const dogBreedsOptions = [
     { value: 'Beagle', label: 'Beagle' },
     { value: 'Boxer', label: 'Boxer' },
     { value: 'Bulldog', label: 'Bulldog' },
-    { value: 'Cavalier King Charles Spaniel', label: 'Cavalier King Charles Spaniel' },
     { value: 'Chihuahua', label: 'Chihuahua' },
     { value: 'Dachshund', label: 'Dachshund' },
     { value: 'Doberman Pinscher', label: 'Doberman Pinscher' },
@@ -40,7 +39,7 @@ const AutoCompleteBreed = ({setFormData, formData}) => {
         name='breed'
         options={dogBreedsOptions}
         onChange={handleChange}
-        placeholder={formData.breed}
+        placeholder={'search' }
       />
     </>
   );

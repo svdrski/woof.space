@@ -19,7 +19,7 @@ export default function Header(){
         navigate('/login')
     } 
 
-    console.log(userdata)
+    // console.log(userdata)
 
 
 

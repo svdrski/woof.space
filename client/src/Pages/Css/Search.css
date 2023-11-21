@@ -9,6 +9,7 @@
     box-sizing: border-box;
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .attempts{
@@ -32,13 +33,17 @@
 
 
 .searchContainer h3{
-    margin: 5px 0 20px 0;
+    display: inline-block;
+    margin: 5px 0 0 0;
 }
 
 .searchContainer h2{
     margin-left: 20px;
 }
 
+.filterinputs{
+    margin-top: 20px;
+}
 .filtersBox{
     width: 30%;
     max-width: 360px;
@@ -206,6 +211,7 @@
     background-color: rgb(79, 0, 207) !important;
     border-color: rgb(79, 0, 207) !important;
     opacity: 1 !important;
+    z-index: 0 !important;
   }
 
 
@@ -215,4 +221,111 @@
     font-size: 15px;
     margin-left: -6px;
     margin-bottom: 20px !important;
+  }
+
+
+  .showFiltersbtn{
+    display: none;
+  }
+
+  .mobmenuContainer{
+    display: none;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  @media (max-width: 1030px) {
+    header{
+        display: none;
+    }
+    .blockContainer{
+        padding: 8px;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 18px;
+        margin-bottom: 70px;
+    }
+
+    .filtersBox{
+        width: 100%;
+    box-sizing: border-box;
+    max-width: 100%;
+    padding: 30px 20px;
+    border-radius: 18px;
+    }
+
+    .searchContainer{
+        width: 100%;
+    }
+
+    .searchContainer h3{
+        margin: 0 0 20px 0;
+        display: block;
+    }
+
+    .cardBox,  .cardDescription{
+    margin:  2px 0;
+    width: 100%;
+    max-width: 100%;
+    }
+
+    .cardDescription{
+        padding: 25px;
+  border-radius: 18px;
+    }
+    .cardBox, .gradient-overlay{
+        height: 420px;
+        min-height: 420px;
+        border-radius: 18px;
+    }
+
+    .filterinputs{
+        display: none;
+    }
+
+    .showFiltersbtn{
+        display: inline-block;
+        margin: 13px 20px;
+    }
+
+    .filtervisible{
+        display: block !important;
+    }
+
+    .attempts{
+        margin: 10px;
+    }
+
+    .noresults{
+    margin: auto;
+    margin-top: auto;
+    margin-top: -70px;
+    }
+
+
+    .mobmenuContainer{
+        display: flex;
+        background-color: #fff;
+        justify-content: space-evenly;
+        height: 65px;
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        align-items: center;
+        border-radius: 18px;
+        margin-bottom: 2px;
+    }
   }

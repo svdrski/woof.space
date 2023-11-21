@@ -15,11 +15,11 @@ class MatchController {
     }
 
     static GetList (req, res){
-        const {gender, breed, age} = req.body
+        const {gender, breed, age, city} = req.body
         const token = req.cookies.token
         jwt.verify(token, 'KEY',async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
-            const users = await MatchModel.getList(decoded.email, gender, breed, age)
+            const users = await MatchModel.getList(decoded.email, gender, breed, age, city)
             res.status(201).send(users)
         })
     }

@@ -18,11 +18,15 @@ const Matches = mongoose.model('Matches', LikeSchema)
 
 class MatchModel {
 
-    static async getList(email, gender, breed) {
+    static async getList(email, gender, breed, age, city) {
 
-        const Conditions = { email: { $ne: email }, gender: {$ne: (gender === 'boy' ? 'boy' : 'girl')} }
+        console.log(age)
+        const Conditions = { email: { $ne: email }, gender: {$ne: (gender === 'boy' ? 'boy' : 'girl')}, age: {$gt: age[0], $lt: age[1]}, city }
+
+        const allUsers = await User.find({city});
+        console.log(allUsers.length);
+
         if(breed){Conditions.breed = breed}
-        console.log(Conditions)
         try {
             const usersWithoutMatches = await User.aggregate([
                 {
@@ -56,6 +60,7 @@ class MatchModel {
                 },
             ]);
     
+            // console.log(usersWithoutMatches.length)
             return usersWithoutMatches;
         } catch (error) {
             console.error('Error:', error);
@@ -100,16 +105,18 @@ class MatchModel {
             const updatedOpponent = await Matches.updateOne({user: opponent, opponent: user}, {matched: user, isChosen: true})
             // console.log('DATA',savedUser,  updatedOpponent)
         }
+        const updatedUser  = await User.updateOne({email:user}, {$inc: {attempts:1}})
     }
 
 
     static async disLike (user, opponent){
         console.log('DISLIKE')
-
             const newDislike = new Matches({user, opponent, isChosen: true,  isDisliked: true })
             const newchoose = await newDislike.save()
-            // console.log(newchoose)
+            const updatedUser = await User.updateOne({email: user}, {$inc: {attempts: 1}});
 
+            console.log(user)
+            console.log('Updated User:', updatedUser);
     }
 }
 

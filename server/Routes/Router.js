@@ -2,6 +2,7 @@ const express = require('express')
 const Router = express.Router()
 const AuthController = require('../Controllers/AuthController.js')
 const MatchController = require('../Controllers/MatchController.js')
+const ChatController = require('../Controllers/ChatController.js')
 const upload  = require('../Middlewares/Uploads.js')
 
 
@@ -14,7 +15,10 @@ Router.post('/login', AuthController.Login)
 Router.post('/like', MatchController.Like )
 Router.post('/dislike', MatchController.disLike )
 Router.post('/search/users', MatchController.GetList)
+
 Router.post('/search/matches', MatchController.GetMatches)
+Router.post('/chat/users', ChatController.GetOpponents)
+
 
 
 module.exports = Router

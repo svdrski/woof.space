@@ -7,6 +7,7 @@ import Registration from './Pages/Registration';
 import Login from './Pages/Login';
 import Homepage from './Pages/Homepage';
 import Search from './Pages/Search';
+import Chat from './Pages/Chat';
 import Cookies from 'universal-cookie';
 import { useState } from 'react';
 export const cookies = new Cookies();
@@ -27,6 +28,7 @@ function App() {
     <Route path='/login' element={<Login/>}/>
     <Route path='/registration' element={<Registration/>}/>
     <Route path='/search' element={<Checker><Search/></Checker>}/>
+    <Route path='/chat' element={<Checker><Chat/></Checker>}/>
     </Routes>
     </UserDataContext>
 

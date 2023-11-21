@@ -7,12 +7,12 @@ const userSchema = new mongoose.Schema({
   email: {type: String, unique: true},
   dogname: String,
   breed: String,
-  age: String,
+  age: Number,
   gender:String,
   description: String,
   city: String,
-  photos: [String]
-
+  photos: [String],
+  attempts: {type: Number, default: 0}
 });
 
 

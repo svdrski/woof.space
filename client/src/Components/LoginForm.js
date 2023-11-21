@@ -26,11 +26,11 @@ export default function LoginForm (){
 
     }
 
-    useEffect(()=>{
-        const myCookieValue = cookies.get('token');
-        if(myCookieValue) {navigate('/search')}
+    // useEffect(()=>{
+    //     const myCookieValue = cookies.get('token');
+    //     if(myCookieValue) {navigate('/search')}
     
-    },[])
+    // },[])
 
 
 

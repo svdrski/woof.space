@@ -8,6 +8,7 @@ import Header from '../Components/Header';
 import SearchCard from '../Components/SearchCard';
 import { useMyContext } from '../Components/UserDataContext';
 import RangeSlider from '../Components/AgeRange';
+import MobileMenuContainer from '../Components/mobileMenuContainer';
 
 export default function Search () {
 
@@ -16,10 +17,12 @@ export default function Search () {
 
     const navigate = useNavigate();
     const [breed, setBreed] = useState(null)
+    const [attempts, setAttempts] = useState(userdata.attempts)
     const [dogsList, setDogsList] = useState([])
     const [currentDog, setCurrentDog] = useState(null)
     const [currentCount, setCount] = useState(0)
     const [rangeValues, setRangeValues] = useState([0, 20]);
+    const [visibleFilters, setVisibleFilters] = useState(false)
 
 
 
@@ -30,7 +33,7 @@ export default function Search () {
 
     async function getUsers() {
         try{
-            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues}, {
+            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
@@ -42,6 +45,7 @@ export default function Search () {
 
 
     useEffect(()=>{
+
         getUsers()
     },[])
 
@@ -62,18 +66,14 @@ export default function Search () {
 
 
     async function handlelike() {
-
         setCount((prevCount) => {
             setCurrentDog(dogsList[prevCount + 1]);
             return prevCount + 1;
           });
+          setAttempts(attempts + 1)
 
         const regLike = await axios.post('http://localhost:3333/like', {user: userdata.email, opponent: currentDog.email} )
 
-
-
-        console.log(currentDog.email)
-        console.log(userdata.email)
     }
 
 
@@ -83,8 +83,9 @@ export default function Search () {
             return prevCount + 1;
           });
 
-          const regDislike = await axios.post('http://localhost:3333/dislike', {user: userdata.email, opponent: currentDog.email} )
+          setAttempts(attempts + 1)
 
+          const regDislike = await axios.post('http://localhost:3333/dislike', {user: userdata.email, opponent: currentDog.email} )
     }
 
 
@@ -103,16 +104,24 @@ export default function Search () {
            
            
            <div className='searchContainer'>
-                <h2>Search in City</h2>
-                <p className='attempts'>You made <b>33</b> attempts</p>
+                <h2>Search in {userdata.city}</h2>
+                <p className='attempts'>You made <b>{attempts}</b> attempts</p>
+                <span onClick={()=>{setVisibleFilters(!visibleFilters)}} className='showFiltersbtn'>{visibleFilters ? 'Hide filters' : 'Show filters'}</span>
+
+                <div className={`filterinputs ${visibleFilters ? 'filtervisible' : ''}`}>
                 <div className='filtersBox'>
                 <h3>Filters</h3>
-                <AutoCompleteBreed setFormData={setBreed} formData={breed}/>
-                <label>Age</label>
-                <div className='selectorAge'>
-                <RangeSlider rangeValues={rangeValues} setRangeValues={setRangeValues}/>
+
+                
+                    <AutoCompleteBreed setFormData={setBreed} formData={breed}/>
+                    <label>Age</label>
+                    <div className='selectorAge'>
+                    <RangeSlider rangeValues={rangeValues} setRangeValues={setRangeValues}/>
+                    </div>
+                    <button onClick={getUsers} className='findbtn'>Find</button>
                 </div>
-                <button onClick={getUsers} className='findbtn'>Find</button>
+   
+
                 </div>
             </div>
 
@@ -127,13 +136,16 @@ export default function Search () {
                 </div>
                 <h3>Description</h3>
                 <p>{currentDog.description}</p>
-                <button onClick={showMatches}>SHowmatches</button>
+                {/* <button onClick={showMatches}>SHowmatches</button> */}
             </div>
             </>
-           ) : <div className='noresults'>                <button onClick={showMatches}>SHowmatches</button>
+           ) : <div className='noresults'>            
+               <button onClick={showMatches}>SHowmatches</button>
            </div>}
 
         </div>
+
+        <MobileMenuContainer/>
         </>
     )
 }

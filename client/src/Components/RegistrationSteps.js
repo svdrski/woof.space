@@ -41,8 +41,8 @@ export default function RegistrationSteps ({step, formData, setFormData, func}){
 
                     <AutoCompleteBreed setFormData={setFormData} formData={formData}/>
 
-                    <label htmlFor='age'>Age</label>
-                    <input className='inp' type="number" onChange={changer} value={formData.age} name='age' required/>
+                    <label htmlFor='age'>Age (max 20)</label>
+                    <input className='inp' type="number" onChange={changer} value={formData.age} name='age' required max="20"/>
 
                     <label htmlFor=''>Gender</label>
                     <span>

@@ -2,10 +2,11 @@ import { useEffect, useState, useRef } from 'react'
 import socket from '../Components/Socket';
 import { useMyContext } from '../Components/UserDataContext';
 import { v4 as uuidv4 } from 'uuid';
+import { Link } from 'react-router-dom';
 
 const sendicon = import ('../Img/sendbtn.svg')
 
-export default function ChatDialog({activefriend, roomId, messsages, setMessages}){
+export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList}){
 
 
     const dialogRef = useRef(null);
@@ -23,10 +24,24 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
     },[socket, messsages])
 
 
+
+
+
+
+
+
+    const isTyping = () => {
+        socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
+    }
+    
+
     useEffect(()=>{
         socket.on('respTyping', (data)=> setStatus(data))
         setTimeout(()=>{setStatus('')}, 3000)
     })
+
+
+
 
 
     useEffect(() => {
@@ -50,21 +65,24 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
 
         }
         setMessage('')
+        console.log(message)
     }
 
 
 
-    const isTyping = () => {
-        socket.emit('typing', `${userdata.name} is typing...` )
-    }
+ 
 
     
 
     return(
         <div className="chatFriends messageArea">
+            <div className='opponentData'>
+                <div className='msgPhoto' style={{background: `url(http://localhost:3333/${activefriend?.photos[0].slice(2, activefriend.photos[0].length)})`}}></div>
+                <h3>{activefriend?.name}</h3>
+                <Link to='/profile'>show profile</Link>
+            </div>
 
             <div className='dialogArea' ref={dialogRef}>
-
                 {
                     messsages.map((item)=>(
                         item.name === userdata.name ? (
@@ -86,10 +104,6 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                         )
                     ))
                 }
-
-
-
-
             </div>
 
             <p className='istyping'>{status}</p>

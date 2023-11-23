@@ -6,6 +6,7 @@ const ChatController = require('./Controllers/ChatController.js')
 const path = require('path');
 const cors = require('cors');
 const { Socket } = require('dgram');
+const { default: mongoose } = require('mongoose');
 
 const App = express()
 const server = require('http').Server(App)
@@ -39,41 +40,65 @@ connectToDb()
 
 
 
+
+const messageShema = new mongoose.Schema({
+  text: String,
+  name: String,
+  id: String,
+  recipientEmail: String,
+  SocketID: String,
+  roomId: String
+})
+
+const message = mongoose.model('message', messageShema)
+
+let onlineUsers = []
+
+
 socketIO.on('connection', (socket)=>{
+
     console.log('User', socket.id, 'Connected')
 
-    // socket.on('message', (data)=>{
-    //   console.log(data)
-    //   socketIO.emit('response', data)
-    // })
-
-
-
-    socket.on('message', (data) => {
-      // Отправка сообщения всем пользователям в комнате
-      socketIO.to(data.roomId).emit('response', data);
-      console.log(`Сообщение в комнате ${data.roomId}: ${data}`);
-  });
-
-
-    socket.on('createDialog',(data)=>{
-      socket.join(data)
-      console.log(`Пользователь отключен к комнате: ${data}`)
-
+    //set list of online users and emit list to client
+    socket.on('setUserOnline', async (data) => {
+       if(!onlineUsers.some(item => item.user === data)) {await onlineUsers.push({user: data, id:socket.id})}
+      socketIO.emit('onlineList', onlineUsers)
     })
 
+    // save message to db and send to client dialog
+    socket.on('message', async (data) => {
+      const newMessage = new message(data)
+      try{
+        const save =  await newMessage.save()
+      } catch(e) {console.log(e)}
+      socketIO.to(data.roomId).emit('response', data);
+    });
+
+    //create dialog room and load all story
+    socket.on('createDialog', async (data)=>{
+      socket.join(data.roomId)
+      console.log(`Пользователь отключен к комнате: ${data.roomId}`)
+      try{
+        const story = await message.find({roomId: data.roomId})
+        socketIO.to(data.roomId).emit('messagesStory', story)
+      } catch(e) {console.log(e)}
+    })
+
+    //disconnect User from dialog
     socket.on('leaveRoom', (roomId) => {
       socket.leave(roomId);
-      console.log(`Пользователь отключен от комнаты: ${roomId}`);
-  });
-
-  
-
-    socket.on('typing', (data)=> socket.broadcast.emit('respTyping', data))
+    });
 
 
+    // show message if opponent typing something
+    socket.on('typing', (data)=> socket.broadcast.to(data.roomId).emit('respTyping', data.message))
+
+
+    //on disconnect update online list and send to all clients
     socket.on('disconnect', ()=>{
       console.log(socket.id, 'User disconnected')
+      onlineUsers = onlineUsers.filter(item => item.id !== socket.id)
+      socketIO.emit('onlineList', onlineUsers)
     })
 })
 

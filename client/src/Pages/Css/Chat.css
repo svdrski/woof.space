@@ -12,10 +12,14 @@
 
 .messageArea{
     max-height: 700px;
-    margin-left: 3px;
+    margin-left: 20px;
     width: 400px !important;
     min-height: 520px;
+    justify-content: space-between !important;
+    transition: all 12s ease;
+
 }
+
 
 
 .chatFriends{
@@ -47,6 +51,11 @@
     border-radius: 18px;
     margin: 6px 0;
     align-items: center;
+}
+
+.digprevActive{
+    background-color: #4F00CF;
+    color: #fff;
 }
 
 .dialogPrev:hover{
@@ -124,6 +133,7 @@
     border: none;
     background-size: cover;
     border-radius: 300px;
+    transition: all 0.3s ease
 }
 
 .messageArea{
@@ -132,6 +142,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    transition: all 0.3s ease
 }
 
 .chatMsg{
@@ -193,9 +204,40 @@ color: #7c7c7c !important;
 }
 
 .dialogArea{
-    border-radius: 40px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-  
+    scrollbar-width: none !important;
+    transition: all 12s ease;
+}
+
+.dialogArea::-webkit-scrollbar {
+    display: none;
+}
+
+.opponentData{
+    display: flex;
+    border-bottom: 1px solid #EEEEEE;
+    padding: 15px 15px 10px 15px;
+    align-items: center;
+}
+
+
+.opponentData a {
+    margin-left: auto;
+    color: #a0a0a0;
+    font-size: 14px;
+    margin-right: 9px;
+}
+
+.opponentData h3{
+    margin-left: 11px;
+}
+
+.msgPhoto{
+    height: 40px;
+    width: 40px;
+    background-size: cover !important;
+    background-position: center !important;
+    border-radius: 222px;
 }

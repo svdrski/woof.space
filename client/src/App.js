@@ -2,14 +2,15 @@ import logo from './logo.svg';
 import './App.css';
 import {Routes, Route} from 'react-router-dom'
 import Checker from './Components/AuthChecker';
-import {UserDataContext} from './Components/UserDataContext'
 import Registration from './Pages/Registration';
 import Login from './Pages/Login';
 import Homepage from './Pages/Homepage';
 import Search from './Pages/Search';
 import Chat from './Pages/Chat';
+import socket from './Components/Socket';
 import Cookies from 'universal-cookie';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useMyContext } from './Components/UserDataContext';
 export const cookies = new Cookies();
 
 
@@ -17,12 +18,24 @@ export const cookies = new Cookies();
 
 function App() {
 
-  const [userData, setUserData] = useState({})
+  const {userdata} = useMyContext()
+
+
+
+  useEffect(()=>{
+    socket.emit('setUserOnline', userdata.email )
+  })
+
+
+
+
+
+
+
 
 
   return (
     <>
-    <UserDataContext>
     <Routes>
     <Route path='/'  element={<Homepage/>}/>
     <Route path='/login' element={<Login/>}/>
@@ -30,7 +43,6 @@ function App() {
     <Route path='/search' element={<Checker><Search/></Checker>}/>
     <Route path='/chat' element={<Checker><Chat/></Checker>}/>
     </Routes>
-    </UserDataContext>
 
     </>
 

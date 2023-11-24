@@ -47,7 +47,12 @@ const messageShema = new mongoose.Schema({
   id: String,
   recipientEmail: String,
   SocketID: String,
-  roomId: String
+  roomId: String,
+  time: {
+    type: String,
+    required: true,
+  },
+  isReaded:{type: Boolean, default: false}
 })
 
 const message = mongoose.model('message', messageShema)
@@ -72,6 +77,7 @@ socketIO.on('connection', (socket)=>{
         const save =  await newMessage.save()
       } catch(e) {console.log(e)}
       socketIO.to(data.roomId).emit('response', data);
+      socketIO.emit('KNKNKNK')
     });
 
     //create dialog room and load all story
@@ -100,6 +106,28 @@ socketIO.on('connection', (socket)=>{
       onlineUsers = onlineUsers.filter(item => item.id !== socket.id)
       socketIO.emit('onlineList', onlineUsers)
     })
+
+
+    socket.on('getLastMessages',async (data)=>{
+      const response = []
+      for(let item of data) {
+        const data = await message.find({roomId: item })
+        data.length && response.push(data[data.length - 1])
+      }
+      console.log(response)
+      socket.emit('lastMsgList', (response))
+    })
+
+
+    socket.on('updateOppDialogPrev', (data)=>{
+      try{
+          const userinList = onlineUsers.find(user => user.user === data.id)
+          userinList && socketIO.to(userinList.id).emit('updateLastMessage', {id: data.id, text: data.message, opponent: data.opponent})
+      } catch(e){console.log('Error> ', e)}
+
+    })
+
+
 })
 
 

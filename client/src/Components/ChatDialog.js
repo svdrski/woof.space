@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const sendicon = import ('../Img/sendbtn.svg')
 
-export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList}){
+export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages}){
 
 
     const dialogRef = useRef(null);
@@ -20,12 +20,18 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
         socket.on('response',(data) =>{
             console.log(data)
             setMessages([...messsages, data])
+
+            setFriendsList((prev)=>{
+                return prev.map(item => item)
+            })
         } )
+
     },[socket, messsages])
 
 
 
 
+    console.log(messsages)
 
 
 
@@ -54,64 +60,134 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
     const sender = (e) =>{
         e.preventDefault()
         if(message.trim() && activefriend) {
+
+            const currentTime = new Date();
+            const hours = currentTime.getHours().toString().padStart(2, '0');
+            const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+            const time = `${hours}:${minutes}`;
+
+
+
             socket.emit('message', {
                 text: message,
                 name: userdata.name,
                 id: userdata.email,
                 recipientEmail: activefriend.email,
                 SocketID: socket.id,
-                roomId: roomId
+                roomId: roomId,
+                time
             })
 
         }
         setMessage('')
         console.log(message)
+
+        console.log(lastMessages)
+        //  lastMessages.length && setLastMessages((prev) => {
+        //     return prev.map((item) =>
+        //     item.roomId === [userdata.email, activefriend.email].sort().join('')
+        //             ? { ...item, text: message }
+        //             : item
+        //     );
+        // });
+
+        console.log('1', lastMessages, '2', activefriend.email)
+
+        socket.emit('updateOppDialogPrev', {message, id:activefriend.email, opponent: userdata.email })
+
+        
     }
 
 
+    socket.on('updateLastMessage', (data)=>{
+        console.log(lastMessages)
+        console.log(data)
+        setLastMessages((prev)=>{
+                return  prev.map(item => 
+                    // item.recipientEmail === data.id || item.id === data.id 
+                    item.roomId === [userdata.email, data.opponent].sort().join('')
+                    ? {...item, text:data.text} : item)
+        })
+        console.log('prev>',lastMessages, userdata.email, data.id )
+        console.log(lastMessages)
+
+    })
+
+
+
+    function getLastMessages(){
+        const friendsEmails  = []
+        for (let item of friendsList) {
+            const id = [userdata.email, item.email].sort().join('')
+            friendsEmails.push(id)
+        }
+        socket.emit('getLastMessages', friendsEmails)
+        socket.on('lastMsgList',(data)=>{
+            setLastMessages(data)
+        })
+    }
+
+
+    useEffect(()=>{
+        getLastMessages()
+    },[friendsList])
 
  
 
+    console.log('LIST',friendsList)
+    console.log('FRIEND >', activefriend)
     
 
     return(
+        activefriend ?
         <div className="chatFriends messageArea">
             <div className='opponentData'>
                 <div className='msgPhoto' style={{background: `url(http://localhost:3333/${activefriend?.photos[0].slice(2, activefriend.photos[0].length)})`}}></div>
+                {friendsList.find(item => item?.email === activefriend?.email)?.isOnline && <span className='isOnline onlnstaus'></span>}
+
                 <h3>{activefriend?.name}</h3>
                 <Link to='/profile'>show profile</Link>
             </div>
 
-            <div className='dialogArea' ref={dialogRef}>
-                {
-                    messsages.map((item)=>(
-                        item.name === userdata.name ? (
-                        <div className='linemsg' key={uuidv4()}>
-                        <div className='chatMsg msgSender'>
-                            <p className='sender'>{userdata.name}</p>
-                            <p>{item.text}</p>
-                            <span className='sendTime'>09:20</span>
-                        </div>
-                        </div>
-                        ) : (
-                        <div className='linemsg' key={uuidv4()}>
-                        <div className='chatMsg'>
-                            <p className='enemy sender'>{item.name}</p>
-                            <p>{item.text}</p>
-                        <span className='sendTime'>09:20</span>
-                        </div>
-                        </div>
-                        )
-                    ))
-                }
-            </div>
 
-            <p className='istyping'>{status}</p>
+
+                
+                <div className='dialogArea' ref={dialogRef}>
+                    {
+                        messsages.map((item)=>(
+                            item.name === userdata.name ? (
+                            <div className='linemsg' key={uuidv4()}>
+                            <div className='chatMsg msgSender'>
+                                <p className='sender'>{userdata?.name}</p>
+                                <p>{item.text}</p>
+                                <span className='sendTime'>{item.time}</span>
+                            </div>
+                            </div>
+                            ) : (
+                            <div className='linemsg' key={uuidv4()}>
+                            <div className='chatMsg'>
+                                <p className='enemy sender'>{item?.name}</p>
+                                <p>{item?.text}</p>
+                            <span className='sendTime'>{item.time}</span>
+                            </div>
+                            </div>
+                            )
+                        ))
+                    }
+                </div>
+
+                <p className='istyping'>{status}</p>
+
+           
+
 
             <form className='sendmsg' onSubmit={sender}>
                 <input value={message} onKeyDown={isTyping} onChange={(e)=>{setMessage(e.target.value)}} type="text"/>
                 <button className='sendbtn'></button>
             </form>
         </div>
+        :
+
+        <div className='emptyMsg'></div>
     )
 }

@@ -15,9 +15,10 @@
     margin-left: 20px;
     width: 400px !important;
     min-height: 520px;
-    justify-content: space-between !important;
-    transition: all 12s ease;
-
+    justify-content: flex-end;
+        transition: all 12s ease;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    position: relative;
 }
 
 
@@ -44,6 +45,7 @@
 }
 
 
+
 .dialogPrev{
     display: flex;
     background-color: #F8F8F8;
@@ -58,6 +60,14 @@
     color: #fff;
 }
 
+.digprevActive .unreadedMsg{
+    display: none;
+}
+
+.digprevActive .lastMtime{
+    color: #fff;
+}
+
 .dialogPrev:hover{
     cursor: pointer;
 }
@@ -66,14 +76,19 @@
     display: flex;
     align-items: center;
 }
+.topData .inf{
+    font-size: 15px;
+    color: #a0a0a0;
+    font-weight: 400;
+}
 
 .isOnline{
-    height: 10px;
-    width: 10px;
+    height: 13px;
+    width: 18px;
     display: block;
     background-color: #2AA200;
     border-radius: 20px;
-    margin: 2px 0 0 5px;
+    margin: 37px 0px -5px -13px;
 }
 
 .lastMtime{
@@ -106,7 +121,17 @@
 
 .botData p{
     margin: 7px 0 0 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 210px;
+    height: 24px;
+    color: #515151;
     font-size: 15px;
+}
+
+.digprevActive .botData p{
+color: #fff;
 }
 
 .sendmsg{
@@ -115,6 +140,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 14px;
+    border-radius: 0 0 30px 30px;
+    background-color: #fff;
 }
 
 .sendmsg input {
@@ -136,6 +163,10 @@
     transition: all 0.3s ease
 }
 
+.sendbtn{
+    cursor: pointer;
+}
+
 .messageArea{
     height: 70vh;
     padding: 0 !important;
@@ -149,7 +180,7 @@
     display: inline-block;
     background-color: #F5F5F5;
     margin: 7px 20px;
-    padding: 14px 16px 9px 16px;
+    padding: 10px 11px 11px 14px;
     border-radius: 3px 20px 20px 20px;
     max-width: 87%;
     box-sizing: border-box;
@@ -157,6 +188,7 @@
 
 .chatMsg p {
     margin: 0;
+    word-wrap: break-word;
 }
 
 .enemy{
@@ -164,17 +196,17 @@ color: #7c7c7c !important;
 }
 
 .sender{
-    font-size: 14px;
+    font-size: 13px;
     color: #fff;
-    font-weight: 700;
-    margin-bottom: 3px !important;
+    font-weight: 800;
+    margin-bottom: 2px !important;
 }
 
 .sendTime{
     float: right;
     font-size: 11px;
     color: #8b8b8b;
-    margin-top: 5px;
+    margin-top: 3px;
 }
 
 .msgSender{
@@ -182,6 +214,7 @@ color: #7c7c7c !important;
     float: right;
     background-color: #4F00CF;
     color: #fff;
+    transition: all 0.3s ease;
 }
 
 .msgSender p span {
@@ -193,6 +226,7 @@ color: #7c7c7c !important;
 .linemsg{
     width: 100%;
     display: inline-block;
+    transition: all 0.3s ease;
 }
 
 
@@ -209,6 +243,7 @@ color: #7c7c7c !important;
     flex-direction: column;
     scrollbar-width: none !important;
     transition: all 12s ease;
+    margin-top: 6px;
 }
 
 .dialogArea::-webkit-scrollbar {
@@ -218,8 +253,14 @@ color: #7c7c7c !important;
 .opponentData{
     display: flex;
     border-bottom: 1px solid #EEEEEE;
-    padding: 15px 15px 10px 15px;
+    padding: 10px 11px 9px 14px;
     align-items: center;
+    position: absolute;
+    top: 0;
+    width: 94%;
+    background-color: #fff;
+    border-radius: 50px;
+    box-shadow: rgb(149 157 165 / 10%) 0px 8px 24px;
 }
 
 
@@ -240,4 +281,21 @@ color: #7c7c7c !important;
     background-size: cover !important;
     background-position: center !important;
     border-radius: 222px;
+}
+
+
+.onlnstaus{
+    height: 10px;
+    width: 10px;
+    margin: -11px 0 -40px -10px !important;
+}
+
+
+
+.emptyMsg {
+    background-image: url(../../Img/Framemsg.svg);
+    height: 390px;
+    width: 362px;
+    margin: 60px 0 0 110px;
+    background-size: cover;
 }

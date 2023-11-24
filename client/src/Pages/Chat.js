@@ -21,7 +21,8 @@ export default function Chat () {
     const [roomId, setRoomId] = useState('')
     const [messsages, setMessages] = useState([])
     const [shoulUpdateUsers, setShoulUpdateUsers] = useState(false);
-
+    const[lastMessages, setLastMessages] = useState([])
+    
 
 
     useEffect(()=>{
@@ -30,7 +31,6 @@ export default function Chat () {
 
 
     socket.on('onlineList', (data) => {
-        console.log("2")
 
         //set all  offline
         setFriendsList((prevFriendsList) => {
@@ -64,10 +64,6 @@ export default function Chat () {
             console.log("1")
             SetMatches(users.data)
 
-
-
-
-
         } catch(e) {console.log('Error ', e)} finally {
             
         }
@@ -92,8 +88,8 @@ export default function Chat () {
         <>
         <Header/>
         <div className='chatcontainer'>
-            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages}/>
-            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList}/>
+            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages}/>
+            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}/>
         </div>
         
         </>

@@ -33,8 +33,7 @@
 
 
 .searchContainer h3{
-    display: inline-block;
-    margin: 5px 0 0 0;
+    margin: 5px 0px 18px 0px;
 }
 
 .searchContainer h2{
@@ -75,6 +74,8 @@
     height: 40px;
     border-radius: 222px;
     margin-top: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
 }
 
 .cardBox{

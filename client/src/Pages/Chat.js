@@ -23,6 +23,7 @@ export default function Chat () {
     const [shoulUpdateUsers, setShoulUpdateUsers] = useState(false);
     const[lastMessages, setLastMessages] = useState([])
     
+    const [UnreadedMessages, setUnreadedMessages] = useState([])
 
 
     useEffect(()=>{
@@ -52,6 +53,25 @@ export default function Chat () {
     });
 
 
+    useEffect(()=>{
+        socket.on('unreadedMessages', (data)=>{
+            console.log(data)
+            setUnreadedMessages(data)
+        })
+    })
+
+
+    socket.on('addUnreaded', (data) =>{
+        console.log("DDDD", data)
+        setUnreadedMessages([...UnreadedMessages, data])
+
+        activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+            const msg = prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+            const idList = msg.map(item => item._id)
+            socket.emit('saveReaded', idList)
+            return  msg
+        })
+    } )
 
 
     async function showMatches () {
@@ -72,11 +92,11 @@ export default function Chat () {
 
 
 
+
     
 
     useEffect(()=>{
         showMatches()
-        console.log(friendsList)
         // socket.emit('setUserOnline', userdata )
 
     }, [])
@@ -88,8 +108,8 @@ export default function Chat () {
         <>
         <Header/>
         <div className='chatcontainer'>
-            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages}/>
-            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}/>
+            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages}/>
+            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}  UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages}/>
         </div>
         
         </>

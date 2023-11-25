@@ -68,6 +68,15 @@ socketIO.on('connection', (socket)=>{
     socket.on('setUserOnline', async (data) => {
        if(!onlineUsers.some(item => item.user === data)) {await onlineUsers.push({user: data, id:socket.id})}
       socketIO.emit('onlineList', onlineUsers)
+
+      const NotReadedMsg = await message.find({recipientEmail:data, isReaded:false})
+      socket.emit('unreadedMessages', NotReadedMsg)
+      // console.log(NotReadedMsg)
+    })
+
+
+    socket.on('setReaded', async (data) => {
+      const updateReaded = await message.updateMany({id: data.opponent, recipientEmail: data.user},{isReaded: true})
     })
 
     // save message to db and send to client dialog
@@ -75,10 +84,23 @@ socketIO.on('connection', (socket)=>{
       const newMessage = new message(data)
       try{
         const save =  await newMessage.save()
-      } catch(e) {console.log(e)}
-      socketIO.to(data.roomId).emit('response', data);
-      socketIO.emit('KNKNKNK')
+        socketIO.to(data.roomId).emit('response', save);
+
+
+        console.log(data.recipientEmail, onlineUsers)
+        const user = onlineUsers.find(item => item.user === data.recipientEmail)
+      
+      //отправить отправителю в стейт с нечитанными сообщение и запушить его вконец
+        socketIO.to(user.id).emit('addUnreaded', save )
+
+    } catch(e) {console.log(e)}
     });
+
+
+    socket.on('saveReaded', async (data)=>{
+      const result = await message.updateMany({_id: { $in: data }}, {isReaded: true}) 
+      console.log(result)
+    } )
 
     //create dialog room and load all story
     socket.on('createDialog', async (data)=>{
@@ -114,7 +136,6 @@ socketIO.on('connection', (socket)=>{
         const data = await message.find({roomId: item })
         data.length && response.push(data[data.length - 1])
       }
-      console.log(response)
       socket.emit('lastMsgList', (response))
     })
 
@@ -122,7 +143,7 @@ socketIO.on('connection', (socket)=>{
     socket.on('updateOppDialogPrev', (data)=>{
       try{
           const userinList = onlineUsers.find(user => user.user === data.id)
-          userinList && socketIO.to(userinList.id).emit('updateLastMessage', {id: data.id, text: data.message, opponent: data.opponent})
+          userinList && socketIO.to(userinList.id).emit('updateLastMessage', {id: data.id, text: [data.message], opponent: data.opponent})
       } catch(e){console.log('Error> ', e)}
 
     })

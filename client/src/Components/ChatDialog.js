@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const sendicon = import ('../Img/sendbtn.svg')
 
-export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages}){
+export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
 
 
     const dialogRef = useRef(null);
@@ -18,20 +18,23 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
 
     useEffect(()=>{
         socket.on('response',(data) =>{
-            console.log(data)
+            
+            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+            })
+
             setMessages([...messsages, data])
 
             setFriendsList((prev)=>{
                 return prev.map(item => item)
             })
+
         } )
+
 
     },[socket, messsages])
 
 
-
-
-    console.log(messsages)
 
 
 
@@ -132,10 +135,6 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
         getLastMessages()
     },[friendsList])
 
- 
-
-    console.log('LIST',friendsList)
-    console.log('FRIEND >', activefriend)
     
 
     return(

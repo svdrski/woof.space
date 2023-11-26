@@ -52,9 +52,12 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
     }
 
 
-    socket.on('messagesStory', (data)=>{
-        setMessages(data)
-    })
+    useEffect(()=>{
+        socket.on('messagesStory', (data)=>{
+            setMessages(data)
+        })
+    }, [messsages])
+  
   
 
 
@@ -69,6 +72,16 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
     useEffect(()=>{
         unreadedFirst()
     }, [UnreadedMessages])
+
+
+
+
+ 
+
+
+
+
+
 
 
 

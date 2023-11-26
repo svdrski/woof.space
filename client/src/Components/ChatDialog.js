@@ -3,6 +3,8 @@ import socket from '../Components/Socket';
 import { useMyContext } from '../Components/UserDataContext';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
+import readed from '../Img/readed.svg'
+import unreaded from '../Img/unread.svg'
 
 const sendicon = import ('../Img/sendbtn.svg')
 
@@ -24,13 +26,13 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
             })
 
             setMessages([...messsages, data])
-
             setFriendsList((prev)=>{
                 return prev.map(item => item)
             })
 
+            
         } )
-
+        
 
     },[socket, messsages])
 
@@ -46,7 +48,7 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
 
     useEffect(()=>{
         socket.on('respTyping', (data)=> setStatus(data))
-        setTimeout(()=>{setStatus('')}, 3000)
+        setTimeout(()=>{setStatus('')}, 5000)
     })
 
 
@@ -68,9 +70,6 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
             const hours = currentTime.getHours().toString().padStart(2, '0');
             const minutes = currentTime.getMinutes().toString().padStart(2, '0');
             const time = `${hours}:${minutes}`;
-
-
-
             socket.emit('message', {
                 text: message,
                 name: userdata.name,
@@ -81,11 +80,18 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                 time
             })
 
+
+
+        
         }
+
+
         setMessage('')
         console.log(message)
-
         console.log(lastMessages)
+
+
+
         //  lastMessages.length && setLastMessages((prev) => {
         //     return prev.map((item) =>
         //     item.roomId === [userdata.email, activefriend.email].sort().join('')
@@ -94,27 +100,48 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
         //     );
         // });
 
-        console.log('1', lastMessages, '2', activefriend.email)
+        
 
+        console.log('1', lastMessages, '2', activefriend.email)
         socket.emit('updateOppDialogPrev', {message, id:activefriend.email, opponent: userdata.email })
 
-        
+        // activefriend &&  data.recipientEmail === activefriend.id && socket.emit('updateIread', userdata.email)
     }
 
 
     socket.on('updateLastMessage', (data)=>{
-        console.log(lastMessages)
-        console.log(data)
         setLastMessages((prev)=>{
                 return  prev.map(item => 
                     // item.recipientEmail === data.id || item.id === data.id 
                     item.roomId === [userdata.email, data.opponent].sort().join('')
                     ? {...item, text:data.text} : item)
         })
-        console.log('prev>',lastMessages, userdata.email, data.id )
-        console.log(lastMessages)
+        console.log('prev>',data )
 
+        if(data?.opponent === activefriend?.email){
+            socket.emit('readedNow', {opponent: data.opponent, room:roomId, user: userdata.email} )
+        }
     })
+
+
+
+
+    //обновить сообщения если у обоих открыты диалоги
+    useEffect(()=>{
+        socket.on('makeReaded',(data)=>{
+            if(activefriend && activefriend.email !== data ) {
+                console.log(activefriend.email, data)
+                setMessages((prev)=>{
+                    return prev.map(item =>  ({...item, isReaded :true}))
+                })
+            }
+
+        })
+    },[activefriend])
+
+
+
+
 
 
 
@@ -157,17 +184,26 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                             item.name === userdata.name ? (
                             <div className='linemsg' key={uuidv4()}>
                             <div className='chatMsg msgSender'>
-                                <p className='sender'>{userdata?.name}</p>
+                                {/* <p className='sender'>{userdata?.name}</p> */}
                                 <p>{item.text}</p>
-                                <span className='sendTime'>{item.time}</span>
+                                <div className='flexStatus'>
+                                    <span className='sendTime'>{item.time}</span>
+                                    {item.isReaded ? <img src={readed}/>  : <img src={unreaded}/> }
+                                </div>
+
                             </div>
                             </div>
                             ) : (
                             <div className='linemsg' key={uuidv4()}>
                             <div className='chatMsg'>
-                                <p className='enemy sender'>{item?.name}</p>
+                                {/* <p className='enemy sender'>{item?.name}</p> */}
                                 <p>{item?.text}</p>
-                            <span className='sendTime'>{item.time}</span>
+                            
+                            <div className='flexStatus'>
+                                <span className='sendTime'>{item.time}</span>
+                                {item.isReaded ? <img src={readed}/> : <img src={unreaded}/> }
+                            </div>
+
                             </div>
                             </div>
                             )

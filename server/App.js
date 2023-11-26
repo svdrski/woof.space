@@ -92,6 +92,7 @@ socketIO.on('connection', (socket)=>{
       
       //отправить отправителю в стейт с нечитанными сообщение и запушить его вконец
         socketIO.to(user.id).emit('addUnreaded', save )
+        socketIO.to(data.roomId).emit('UpdateReaded', save)
 
     } catch(e) {console.log(e)}
     });
@@ -99,13 +100,27 @@ socketIO.on('connection', (socket)=>{
 
     socket.on('saveReaded', async (data)=>{
       const result = await message.updateMany({_id: { $in: data }}, {isReaded: true}) 
-      console.log(result)
     } )
+
+
+    socket.on('readedNow', async (data) =>{
+       const updateReaded = await message.updateMany({roomId: data.room}, {isReaded: true}) 
+      socketIO.to(data.room).emit('makeReaded', data.user)
+    })
+
+
+
+    // socket.on('updateIread', (data)=>{
+    //   const userinList = onlineUsers.find(user => user.user === data)
+    //   socketIO.to(userinList.id).emit(())
+    // })
+
+
 
     //create dialog room and load all story
     socket.on('createDialog', async (data)=>{
       socket.join(data.roomId)
-      console.log(`Пользователь отключен к комнате: ${data.roomId}`)
+      console.log(`Пользователь подключен к комнате: ${data.roomId}`)
       try{
         const story = await message.find({roomId: data.roomId})
         socketIO.to(data.roomId).emit('messagesStory', story)

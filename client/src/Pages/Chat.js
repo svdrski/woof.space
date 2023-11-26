@@ -2,6 +2,8 @@ import Header from '../Components/Header';
 import ChatOpponents from '../Components/ChatOpponents';
 import ChatDialog from '../Components/ChatDialog';
 import './Css/Chat.css'
+import sound from "../sounds/mixkit-long-pop-2358.wav"
+
 import { useMyContext } from '../Components/UserDataContext';
 
 import { useEffect, useState } from 'react';
@@ -57,12 +59,13 @@ export default function Chat () {
         socket.on('unreadedMessages', (data)=>{
             console.log(data)
             setUnreadedMessages(data)
+            
         })
     })
 
 
     socket.on('addUnreaded', (data) =>{
-        console.log("DDDD", data)
+
         setUnreadedMessages([...UnreadedMessages, data])
 
         activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
@@ -72,6 +75,52 @@ export default function Chat () {
             return  msg
         })
     } )
+
+
+    // socket.on('UpdateReaded', (data)=>{
+    //     activefriend && messsages.length && setMessages((prev)=>{
+    //         const msg = prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+    //         const idList = msg.map(item => item._id)
+    //         socket.emit('saveReaded', idList)
+    //         return  msg
+    //     })
+
+        // activefriend &&  data.id === activefriend.id && socket.emit('updateIread', userdata.email)
+
+        // console.log(activefriend)
+
+    // })
+
+
+
+    // useEffect(()=>{
+    //     socket.on('updateMymsg',(data)=>{
+    //         console.log("SSKSKNKSNKSKN", activefriend, messsages)
+    //         activefriend && messsages.length && setMessages((prev)=>{
+    //             const msg = prev.map(msg => msg.recipientEmail === activefriend?.email ? {...msg, isReaded: true} : msg)
+    //             const idList = msg.map(item => item._id)
+    //             socket.emit('saveReaded', idList)
+    //             return  msg
+    //         })
+
+    //     })
+    // },[userdata])
+
+
+
+
+    useEffect(()=>{
+  
+            socket.on('addUnreaded', (data) =>{
+                try{
+                const audio = new Audio(sound);
+                audio.play()
+            } catch(e){console.log(e)}
+                })
+   
+
+    },[userdata])
+
 
 
     async function showMatches () {

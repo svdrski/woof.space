@@ -91,7 +91,8 @@ socketIO.on('connection', (socket)=>{
         const user = onlineUsers.find(item => item.user === data.recipientEmail)
       
       //отправить отправителю в стейт с нечитанными сообщение и запушить его вконец
-        socketIO.to(user.id).emit('addUnreaded', save )
+      if (user){socketIO.to(user.id).emit('addUnreaded', save )}
+        
         socketIO.to(data.roomId).emit('UpdateReaded', save)
 
     } catch(e) {console.log(e)}
@@ -104,9 +105,18 @@ socketIO.on('connection', (socket)=>{
 
 
     socket.on('readedNow', async (data) =>{
-       const updateReaded = await message.updateMany({roomId: data.room}, {isReaded: true}) 
-      socketIO.to(data.room).emit('makeReaded', data.user)
+      const user = onlineUsers.find(item => item.user === data.user)
+      if (user){socketIO.to(user.id).emit('makeReaded', data)}
     })
+
+    socket.on('uploadToDbMsgDialog',  (data)=>{
+       message.updateMany({roomId: data.room}, {isReaded: true}) 
+
+       const user = onlineUsers.find(item => item.user === data.user)
+      if (user){socketIO.to(user.id).emit('finisgMsgUpdate', data)}
+    })
+
+
 
 
 

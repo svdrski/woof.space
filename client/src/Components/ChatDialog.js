@@ -18,16 +18,22 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
     const [message, setMessage] = useState('')
     const [status, setStatus] = useState('')
 
-    useEffect(()=>{
-        socket.on('response',(data) =>{
-            
-            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
-            })
 
-            setMessages([...messsages, data])
+
+    
+    useEffect(()=>{
+        socket.on('response', async (data) =>{
+            
+          
+
+            await setMessages([...messsages, data])
+
             setFriendsList((prev)=>{
                 return prev.map(item => item)
+            })
+
+            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
             })
 
             
@@ -79,34 +85,16 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                 roomId: roomId,
                 time
             })
-
-
-
-        
         }
 
-
         setMessage('')
-        console.log(message)
-        console.log(lastMessages)
-
-
-
-        //  lastMessages.length && setLastMessages((prev) => {
-        //     return prev.map((item) =>
-        //     item.roomId === [userdata.email, activefriend.email].sort().join('')
-        //             ? { ...item, text: message }
-        //             : item
-        //     );
-        // });
-
-        
 
         console.log('1', lastMessages, '2', activefriend.email)
         socket.emit('updateOppDialogPrev', {message, id:activefriend.email, opponent: userdata.email })
 
-        // activefriend &&  data.recipientEmail === activefriend.id && socket.emit('updateIread', userdata.email)
     }
+
+
 
 
     socket.on('updateLastMessage', (data)=>{
@@ -116,7 +104,7 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                     item.roomId === [userdata.email, data.opponent].sort().join('')
                     ? {...item, text:data.text} : item)
         })
-        console.log('prev>',data )
+        // console.log('prev>',data )
 
         if(data?.opponent === activefriend?.email){
             socket.emit('readedNow', {opponent: data.opponent, room:roomId, user: userdata.email} )
@@ -126,18 +114,44 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
 
 
 
-    //обновить сообщения если у обоих открыты диалоги
-    useEffect(()=>{
-        socket.on('makeReaded',(data)=>{
-            if(activefriend && activefriend.email !== data ) {
-                console.log(activefriend.email, data)
+
+
+   //обновить сообщения если у обоих открыты диалоги
+   useEffect(()=>{
+    socket.on('makeReaded',(data)=>{
+
+       
+        console.log(activefriend?.email , data.opponent)
+
+
+        if(activefriend?.email === data.opponent) {
+
+            setTimeout(()=>{
                 setMessages((prev)=>{
                     return prev.map(item =>  ({...item, isReaded :true}))
                 })
-            }
+                
+                socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
+            }, 400)
+           
+        }
 
-        })
-    },[activefriend])
+    })
+},[socket, messsages])
+
+
+
+useEffect(()=>{
+    socket.on('finisgMsgUpdate', (data)=>{
+        console.log("HUINA")
+        // if(activefriend?.email === data.opponent) {
+        //     setMessages((prev)=>{
+        //         return prev.map(item =>  ({...item, isReaded :true}))
+        //     })
+        // }
+    })
+},[])
+
 
 
 

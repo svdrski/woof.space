@@ -39,6 +39,7 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
         socket.emit('leaveRoom', roomId);
         setMessages([])
         setActivefriend(item)
+        console.log(activefriend)
         const id = [userdata.email, item.email].sort().join('')
         const fullId = {user: userdata.email, roomId:id}
         setRoomId(id)

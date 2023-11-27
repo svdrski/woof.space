@@ -381,7 +381,7 @@ useEffect(()=>{
 
                 <input type='submit' className='sendbtn' value=''/>
             </form>
-            <button onClick={()=>{console.log(activefriend, UnreadedMessages, lastMessages)}}>freind</button>
+            {/* <button onClick={()=>{console.log(activefriend, UnreadedMessages, lastMessages)}}>freind</button> */}
         </div>
         :
 

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 
-export default function ChatOpponents ({matches,friendsList, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
+export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hideOnmobile, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
 
 
 
@@ -71,6 +71,7 @@ export default function ChatOpponents ({matches,friendsList, setlastMsgAccept,se
         const fullId = {user: userdata.email, roomId:id}
         setRoomId(id)
       
+        sethideOnmobile(true)
 
         // ???????????????????
     
@@ -127,7 +128,7 @@ export default function ChatOpponents ({matches,friendsList, setlastMsgAccept,se
 
 
     return(
-        <div className="chatFriends">
+        <div className={`chatFriends ${hideOnmobile ? 'openChat' :''}`}>
         <h3>You have {matches.length} matches</h3>
             <div className='dialogsList'>
                 {friendsList.length && friendsList.map((item)=>(

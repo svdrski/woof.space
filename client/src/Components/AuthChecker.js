@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate,useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { useMyContext } from './UserDataContext';
 
@@ -7,9 +7,12 @@ const Checker = ({ children }) => {
   const [tokenValid, setTokenValid] = useState(false);
   const navigate = useNavigate();
   const {userdata, updateData} = useMyContext()
+  const location = useLocation();
 
+  
 
   useEffect(() => {
+
 
     const checkTokenValidity = async () => {
       try {
@@ -29,12 +32,13 @@ const Checker = ({ children }) => {
       }
     };
 
-    checkTokenValidity();
+    location.pathname !== '/' && checkTokenValidity();
+    
 
 
   }, []);
 
-  return tokenValid ? <>{children}</> : null;
+  return location.pathname === '/' || tokenValid ? <>{children}</> : null;
 };
 
 export default Checker;

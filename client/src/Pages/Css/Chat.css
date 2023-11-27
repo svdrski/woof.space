@@ -8,6 +8,8 @@
     box-sizing: border-box;
     display: flex;
     align-items: flex-start;
+    flex-wrap: wrap;
+    position: relative;
 }
 
 .messageArea{
@@ -315,4 +317,33 @@ color: #7c7c7c !important;
 
 .flexStatus img {
     margin: 1px 0px 0 4px;
+}
+
+
+
+@media (max-width: 1030px) {
+
+    .emptyMsg{
+        margin: 0 auto;
+        height: 270px;
+        width: 250px;
+    }
+
+    .chatcontainer{
+        padding: 0;
+    }
+
+    .chatFriends{
+        width: 100%;
+    }
+
+    .openChat{
+        display: none;
+    }
+
+    .messageArea{
+        margin: 0;
+    width: 100% !important;
+    min-height: 100%;
+    }
 }

@@ -9,6 +9,7 @@ import { useMyContext } from '../Components/UserDataContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import socket from '../Components/Socket';
+import MobileMenuContainer from '../Components/mobileMenuContainer';
 
 
 
@@ -24,6 +25,7 @@ export default function Chat () {
     const [messsages, setMessages] = useState([])
     const [shoulUpdateUsers, setShoulUpdateUsers] = useState(false);
     const[lastMessages, setLastMessages] = useState([])
+    const [hideOnmobile, sethideOnmobile] = useState(false)
 
     const [lastMsgAccept, setlastMsgAccept] = useState(false)
     const [acfriendAccept, setacfriendAccept] = useState(false)
@@ -153,10 +155,11 @@ export default function Chat () {
         <>
         <Header/>
         <div className='chatcontainer'>
-            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} setlastMsgAccept={setlastMsgAccept} setacfriendAccept={setacfriendAccept}/>
+            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} setlastMsgAccept={setlastMsgAccept} setacfriendAccept={setacfriendAccept} hideOnmobile={hideOnmobile} sethideOnmobile={sethideOnmobile}/>
             <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}  UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} matches={matches} lastMsgAccept={lastMsgAccept} acfriendAccept={acfriendAccept}/>
         </div>
-        
+        <MobileMenuContainer setActivefriend={setActivefriend} activefriend={activefriend} sethideOnmobile={sethideOnmobile}/>
+
         </>
     )
 }

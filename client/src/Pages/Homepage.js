@@ -1,11 +1,17 @@
 import './Css/Homepage.css'
 import { Link } from 'react-router-dom'
 import logo from '../Img/logo.svg'
+import MobileMenuContainer from '../Components/mobileMenuContainer'
+import Header from '../Components/Header'
+import { useMyContext } from '../Components/UserDataContext';
 
 export default function Homepage (){
 
+    const {userdata} = useMyContext()
 
     return(
+        <>
+         <Header/>
         <div className="container">
             <section className="left-side block-area">
                 <img src={logo}></img>
@@ -15,11 +21,18 @@ export default function Homepage (){
             </section>
 
             <section className="right-side block-area">
-                <nav>
-                    <Link to='/registration'>Registration</Link>
-                    <Link to='/Login'>Login</Link>
-                </nav>
+                {
+                    !userdata._id &&
+                                        <nav>
+                                        <Link to='/registration'>Registration</Link>
+                                        <Link to='/Login'>Login</Link>
+                                        </nav>
+                }
+              
             </section>
         </div>
+        {userdata._id && <MobileMenuContainer/>}
+        </>
+        
     )
 }

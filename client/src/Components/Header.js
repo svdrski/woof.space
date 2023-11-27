@@ -9,7 +9,7 @@ import { useMyContext } from './UserDataContext';
 export default function Header(){
 
     const navigate = useNavigate();
-    const {userdata, updateData} = useMyContext()
+    const {userdata} = useMyContext()
 
 
 
@@ -19,13 +19,14 @@ export default function Header(){
         navigate('/login')
     } 
 
-    // console.log(userdata)
+    console.log(userdata._id)
 
 
 
 
     return(
-        <header>
+        userdata._id && 
+        (   <header>
             <span className='leftnav'>
                 <img className='headerlogo' src={logo}></img>
                 <nav className='navigation'>
@@ -43,6 +44,6 @@ export default function Header(){
                 </div>
                {userdata &&  <img className='profileimage' src={`http://localhost:3333${userdata?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
             </span>
-        </header>
+        </header>)
     )
 }

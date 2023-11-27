@@ -24,6 +24,9 @@ export default function Chat () {
     const [messsages, setMessages] = useState([])
     const [shoulUpdateUsers, setShoulUpdateUsers] = useState(false);
     const[lastMessages, setLastMessages] = useState([])
+
+    const [lastMsgAccept, setlastMsgAccept] = useState(false)
+    const [acfriendAccept, setacfriendAccept] = useState(false)
     
     const [UnreadedMessages, setUnreadedMessages] = useState([])
 
@@ -33,63 +36,59 @@ export default function Chat () {
     },[])
 
 
-    socket.on('onlineList', (data) => {
-
-        //set all  offline
-        setFriendsList((prevFriendsList) => {
-            return prevFriendsList.map((user) => {
-                return { ...user, isOnline: false };
-            });
-        });
-        
-        //set online as online
-        setFriendsList((prevFriendsList) => {
-            return prevFriendsList.map((user) => {
-
-                if (data.some(item => item.user === user.email)) {
-                    return { ...user, isOnline: true };
-                }
-                return user;
-            });
-        });
-    });
 
 
     useEffect(()=>{
         socket.on('unreadedMessages', (data)=>{
-            console.log(data)
+            console.log('unreadedMessages')
             setUnreadedMessages(data)
             
         })
-    })
+    },[])
 
+    useEffect(() => {
+        const handleAddUnreaded = (data) => {
+            console.log(activefriend, '55');
+            setUnreadedMessages((prev) => [...prev, data]);
+    
+            console.log('ADD', data, UnreadedMessages);
+            activefriend &&
+                UnreadedMessages.length &&
+                setUnreadedMessages((prev) => {
+                    const msg = prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
+                    const idList = msg.map((item) => item._id);
+                    socket.emit('saveReaded', idList);
+                    return msg;
+                });
+        };
+    
+        socket.on('addUnreaded', handleAddUnreaded);
+    
+        return () => {
+            socket.off('addUnreaded', handleAddUnreaded);
+        };
+    }, [activefriend, UnreadedMessages]);
 
-    socket.on('addUnreaded', (data) =>{
+    
+    
 
-        setUnreadedMessages([...UnreadedMessages, data])
+    
 
-        activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-            const msg = prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
-            const idList = msg.map(item => item._id)
-            socket.emit('saveReaded', idList)
-            return  msg
+    useEffect(()=>{
+        socket.on('UpdateReaded', (data)=>{
+            console.log('UpdateReaded')
+    
+            activefriend && messsages.length && setMessages((prev)=>{
+                const msg = prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+                const idList = msg.map(item => item._id)
+                socket.emit('saveReaded', idList)
+                return  msg
+            })
+    
+            activefriend &&  data.id === activefriend.id && socket.emit('updateIread', userdata.email)
         })
-    } )
+    },[])
 
-
-    // socket.on('UpdateReaded', (data)=>{
-    //     activefriend && messsages.length && setMessages((prev)=>{
-    //         const msg = prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
-    //         const idList = msg.map(item => item._id)
-    //         socket.emit('saveReaded', idList)
-    //         return  msg
-    //     })
-
-        // activefriend &&  data.id === activefriend.id && socket.emit('updateIread', userdata.email)
-
-        // console.log(activefriend)
-
-    // })
 
 
 
@@ -130,7 +129,6 @@ export default function Chat () {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
-            console.log("1")
             SetMatches(users.data)
 
         } catch(e) {console.log('Error ', e)} finally {
@@ -146,8 +144,6 @@ export default function Chat () {
 
     useEffect(()=>{
         showMatches()
-        // socket.emit('setUserOnline', userdata )
-
     }, [])
 
 
@@ -157,8 +153,8 @@ export default function Chat () {
         <>
         <Header/>
         <div className='chatcontainer'>
-            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages}/>
-            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}  UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages}/>
+            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} setlastMsgAccept={setlastMsgAccept} setacfriendAccept={setacfriendAccept}/>
+            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}  UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} matches={matches} lastMsgAccept={lastMsgAccept} acfriendAccept={acfriendAccept}/>
         </div>
         
         </>

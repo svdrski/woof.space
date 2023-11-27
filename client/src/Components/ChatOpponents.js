@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 
 
-export default function ChatOpponents ({matches,friendsList, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
+export default function ChatOpponents ({matches,friendsList, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
 
 
 
@@ -15,18 +15,43 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
 
     const [forceUpdate, setForceUpdate] = useState(false);
 
-    useEffect(() => {
-        socket.on('response', (data) => {
-            setMessages((prevMessages) => [...prevMessages, data]);
-            setForceUpdate((prev) => !prev); // изменение флага
-        });
-    }, [socket, setMessages]);
+ 
+
+
 
     async function getOpponents (){
         const dataList = await axios.post('http://localhost:3333/chat/users', {matches})
         setFriendsList(dataList.data)
+        //call to get online list
         socket.emit('setUserOnline', userdata.email);
+        setlastMsgAccept(true)
     }
+
+
+    // Update friends list - online/offline
+
+    socket.on('onlineList', (data) => {
+
+        //set all  offline
+        setFriendsList((prevFriendsList) => {
+            return prevFriendsList.map((user) => {
+                return { ...user, isOnline: false };
+            });
+        });
+        
+        
+        // set online as online
+        setFriendsList((prevFriendsList) => {
+            return prevFriendsList.map((user) => {
+
+                if (data.some(item => item.user === user.email)) {
+                    return { ...user, isOnline: true };
+                }
+                return user;
+            });
+        });
+    });
+
 
 
     useEffect(()=>{
@@ -35,29 +60,44 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
 
 
 
+
     function setOpponentmsg (item){
+        console.log('УСТАНОВИЛСЯ')
+        setActivefriend(item)
+        setacfriendAccept(true)
         socket.emit('leaveRoom', roomId);
         setMessages([])
-        setActivefriend(item)
-        console.log(activefriend)
         const id = [userdata.email, item.email].sort().join('')
         const fullId = {user: userdata.email, roomId:id}
         setRoomId(id)
+      
+
+        // ???????????????????
+    
+        setUnreadedMessages((prev)=>{
+            return []
+        })
+        // UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+        //     console.log('2')
+        //     return prev.map(msg => msg.id === item.email ? {...msg, isReaded: true} : msg)
+        // })
+
+
         socket.emit('createDialog', fullId)
         socket.emit('setReaded', {opponent: item.email, user: userdata.email})
-
-        UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-            return prev.map(msg => msg.id === item.email ? {...msg, isReaded: true} : msg)
-        })
-
     }
+
+    // useEffect(()=>{
+    //     console.log(activefriend)
+    // },[activefriend])
 
 
     useEffect(()=>{
+        console.log('STOORY')
         socket.on('messagesStory', (data)=>{
             setMessages(data)
         })
-    }, [messsages])
+    }, [])
   
   
 
@@ -98,21 +138,37 @@ export default function ChatOpponents ({matches,friendsList, setFriendsList, set
                         <div className='dialogData'>
                             <div className='topData'>
                                 <h3>{item.name} <spnan className='inf'>  /{item.dogname}</spnan></h3>
-                               
                                 <p className='lastMtime'>{lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.time ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.time : ''}</p>
                             </div>
                             <div className='botData'>
+
                                 <p>
+                                    {
+                                    UnreadedMessages? 
+
+                                    UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1]?.text  ?
+
+                                    UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1]?.text 
+                                    :  lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email).text : 'no messages..'
+                                    : "no 3"
+                               
+                                }
+                                </p>
+
+
+                                {/* <p>
                                  {UnreadedMessages.length ?
                                  UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1]?.text ?
                                     !UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1].isReaded ?
                                         UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1].text 
-                                        
-                                            : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
-                                            : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
-                                            :lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'}  
+                                        // : 'no messages..'
+                                        // : 'no messages..'
+                                        // : 'no messages..'}
+                                       : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
+                                        : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
+                                        :lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'} 
                                
-                                </p>
+                                </p> */}
                                 {UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length > 0 && <span className='unreadedMsg'>{UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length} </span>}
 
                                 {/* <p>

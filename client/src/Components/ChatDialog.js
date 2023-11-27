@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback} from 'react'
 import socket from '../Components/Socket';
 import { useMyContext } from '../Components/UserDataContext';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,7 +8,7 @@ import unreaded from '../Img/unread.svg'
 
 const sendicon = import ('../Img/sendbtn.svg')
 
-export default function ChatDialog({activefriend, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
+export default function ChatDialog({activefriend,acfriendAccept, lastMsgAccept, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
 
 
     const dialogRef = useRef(null);
@@ -20,64 +20,18 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
 
 
 
-    
-    useEffect(()=>{
-        socket.on('response', async (data) =>{
-            
-          
-
-            await setMessages([...messsages, data])
-
-            setFriendsList((prev)=>{
-                return prev.map(item => item)
-            })
-
-            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
-            })
-
-            
-        } )
-        
-
-    },[socket, messsages])
-
-
-
-
-
-
-    const isTyping = () => {
-        socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
-    }
-    
-
-    useEffect(()=>{
-        socket.on('respTyping', (data)=> setStatus(data))
-        setTimeout(()=>{setStatus('')}, 5000)
-    })
-
-
-
-
-
-    useEffect(() => {
-        if (dialogRef.current) {
-          dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
-        }
-      }, [messsages]);
-
-
+    /// 1.  Send Message 
     const sender = (e) =>{
         e.preventDefault()
-        if(message.trim() && activefriend) {
 
             const currentTime = new Date();
             const hours = currentTime.getHours().toString().padStart(2, '0');
             const minutes = currentTime.getMinutes().toString().padStart(2, '0');
             const time = `${hours}:${minutes}`;
-            socket.emit('message', {
-                text: message,
+            const newTextValue = e.target.text.value
+
+            newTextValue.length > 0 && socket.emit('message', {
+                text: e.target.text.value,
                 name: userdata.name,
                 id: userdata.email,
                 recipientEmail: activefriend.email,
@@ -85,96 +39,288 @@ export default function ChatDialog({activefriend, roomId, messsages, setMessages
                 roomId: roomId,
                 time
             })
-        }
 
-        setMessage('')
+            setUnreadedMessages((prev)=>{
+                return []
+            })
 
-        console.log('1', lastMessages, '2', activefriend.email)
+        setLastMessages((prev) => {
+            return prev.map((item) =>
+                item.roomId === [userdata.email, activefriend.email].sort().join('')
+                    ? { ...item, text: newTextValue }
+                    : item
+            );
+        });
+            e.target.text.value = ''
+
         socket.emit('updateOppDialogPrev', {message, id:activefriend.email, opponent: userdata.email })
 
+        
     }
 
 
 
 
-    socket.on('updateLastMessage', (data)=>{
-        setLastMessages((prev)=>{
-                return  prev.map(item => 
-                    // item.recipientEmail === data.id || item.id === data.id 
-                    item.roomId === [userdata.email, data.opponent].sort().join('')
-                    ? {...item, text:data.text} : item)
+    // /2 cath message
+    useEffect(()=>{
+        socket.on('response', async (data) =>{
+            console.log('ЗДЕСЬ',activefriend)
+
+
+            await setMessages((prevMessages) => [...prevMessages, data]);
+            
+            setFriendsList((prev)=>{
+                return prev.map(item => item)
+            })
+
+            ////???????????????
+            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+                console.log('3')
+                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+            })
+        } )
+    },[])
+
+    
+
+    // useEffect(() => {
+    //     const handleResponse = async (data) => {
+    //         console.log('ЗДЕСЬ', activefriend);
+    
+    //         await setMessages((prevMessages) => [...prevMessages, data]);
+    
+    //         setFriendsList((prev) => prev.map((item) => item));
+    
+    //         ////???????????????
+    //         activefriend &&
+    //             UnreadedMessages.length &&
+    //             setUnreadedMessages((prev) => {
+    //                 console.log('3');
+    //                 return prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
+    //             });
+    //     };
+    
+    //     socket.on('response', handleResponse);
+    
+    //     return () => {
+    //         // Очищаем обработчик при размонтировании компонента или изменении activefriend
+    //         socket.off('response', handleResponse);
+    //     };
+    // }, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
+
+
+    
+  
+
+//3 call to get last Message to preview
+useEffect(()=>{
+    lastMsgAccept && friendsList.length > 0 && getLastMessages()
+},[lastMsgAccept])
+
+
+//4 Function to call last messages
+async function getLastMessages (){
+    console.log('getLastMessages')
+
+    const roomId  = []
+    console.log(friendsList)
+    for (let item of friendsList) {
+        const id = [userdata.email, item.email].sort().join('')
+        roomId.push(id)
+    }
+    console.log(roomId)
+    socket.emit('getLastMessages', roomId)
+}
+
+// useEffect(()=>{
+//     getLastMessages()
+// },[])
+
+//5 update last massages after response 
+
+useEffect(()=>{
+    socket.on('lastMsgList',(data)=>{
+        setLastMessages((prev) => {
+            return [...prev, ...data];
         })
-        // console.log('prev>',data )
-
-        if(data?.opponent === activefriend?.email){
-            socket.emit('readedNow', {opponent: data.opponent, room:roomId, user: userdata.email} )
-        }
+        console.log('lastMsgList', data)
     })
+},[])
+
+
+// 6 Update opponent last messages 
+
+
+const handleUpdateLastMessage = useCallback((data) => {
+    console.log('updateLastMessage', activefriend, data);
+
+
+
+    if (activefriend && data?.opponent === activefriend?.email) {
+        setLastMessages((prev) => {
+            return prev.map((item) =>
+                item.roomId === [userdata.email, data.opponent].sort().join('')
+                    ? { ...item, text: data.text }
+                    : item
+            );
+        });
+
+        socket.emit('readedNow', { opponent: data.opponent, room: roomId, user: userdata.email });
+    }
+}, [activefriend, setLastMessages, userdata.email, roomId]);
+
+useEffect(() => {
+    socket.on('updateLastMessage', handleUpdateLastMessage);
+    return () => {
+        socket.off('updateLastMessage', handleUpdateLastMessage);
+    };
+}, [handleUpdateLastMessage]);
+
+
+
+
+    
 
 
 
 
 
-
-   //обновить сообщения если у обоих открыты диалоги
-   useEffect(()=>{
-    socket.on('makeReaded',(data)=>{
-
-       
-        console.log(activefriend?.email , data.opponent)
+//
 
 
-        if(activefriend?.email === data.opponent) {
+    //!!!!!!!!!
 
+    // useEffect(() => {
+    //     socket.on('response', (data) => {
+    //         setMessages((prevMessages) => [...prevMessages, data]);
+    //         setForceUpdate((prev) => !prev); // изменение флага
+    //     });
+    // }, [socket, setMessages]);
+
+
+
+
+
+    const isTyping = () => {
+        console.log("TYPING")
+        socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
+    }
+    
+
+    useEffect(()=>{
+        socket.on('respTyping', (data)=> {
+
+            console.log("TYPI22NG")
+            setStatus(data)
+            })
+    
             setTimeout(()=>{
-                setMessages((prev)=>{
-                    return prev.map(item =>  ({...item, isReaded :true}))
-                })
-                
-                socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
-            }, 400)
-           
-        }
+                console.log('STATUS')
+                setStatus('')
+            }, 2000)
+    },[status])
 
-    })
-},[socket, messsages])
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+    // useEffect(()=>{
+    //     socket.on('makeReaded',(data)=>{
+    //         console.log('makeReaded',activefriend, data)
+    
+            
+    //         if(activefriend){
+        
+    
+    //             console.log("NONNONONO", activefriend.email === data.opponent)
+    
+    //             if(activefriend && activefriend.email === data.opponent) {
+            
+    //                 setTimeout(()=>{
+    //                     setMessages((prev)=>{
+    //                         return prev.map(item =>  ({...item, isReaded :true}))
+    //                     })
+                        
+    //                     socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
+    //                 }, 400)
+    //             }
+    //         }
+    
+    
+    //     })
+    // },[]) 
+
+
+
+//    обновить сообщения если у обоих открыты диалоги
+
+   useEffect(() => {
+    const handleMakeReaded = (data) => {
+        console.log('makeReaded', activefriend, data);
+
+        if (activefriend && activefriend.email === data.opponent) {
+            setTimeout(() => {
+                setMessages((prev) => {
+                    return prev.map((item) => ({ ...item, isReaded: true }));
+                });
+
+                console.log("SAAVEED", roomId)
+                socket.emit('uploadToDbMsgDialog', { room: roomId, user: activefriend?.email, opponent: userdata.email });
+            }, 400);
+        }
+    };
+
+    socket.on('makeReaded', handleMakeReaded);
+
+    return () => {
+        // Очищаем обработчик при размонтировании компонента или изменении activefriend
+        socket.off('makeReaded', handleMakeReaded);
+    };
+}, [activefriend, setMessages, roomId, userdata.email, socket]);
+
+ 
+
+
+
+
+
+
 
 
 
 useEffect(()=>{
-    socket.on('finisgMsgUpdate', (data)=>{
-        console.log("HUINA")
-        // if(activefriend?.email === data.opponent) {
-        //     setMessages((prev)=>{
-        //         return prev.map(item =>  ({...item, isReaded :true}))
-        //     })
-        // }
-    })
+    socket.on('finisgMsgUpdate', (data) => {
+        console.log("HUINA");
+        setMessages((prev)=>{
+            return prev.map(item =>  ({...item, isReaded :true}))
+        })
+      });
 },[])
 
 
 
 
-
-
-
-
-    function getLastMessages(){
-        const friendsEmails  = []
-        for (let item of friendsList) {
-            const id = [userdata.email, item.email].sort().join('')
-            friendsEmails.push(id)
+    // SHow the last message on the dialog window
+    useEffect(() => {
+        if (dialogRef.current) {
+          dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
         }
-        socket.emit('getLastMessages', friendsEmails)
-        socket.on('lastMsgList',(data)=>{
-            setLastMessages(data)
-        })
-    }
+      }, [messsages]);
 
 
-    useEffect(()=>{
-        getLastMessages()
-    },[friendsList])
+
+
 
     
 
@@ -231,9 +377,11 @@ useEffect(()=>{
 
 
             <form className='sendmsg' onSubmit={sender}>
-                <input value={message} onKeyDown={isTyping} onChange={(e)=>{setMessage(e.target.value)}} type="text"/>
-                <button className='sendbtn'></button>
+                <input className='enter' onKeyDown={isTyping} name='text'  type="text"/>
+
+                <input type='submit' className='sendbtn' value=''/>
             </form>
+            <button onClick={()=>{console.log(activefriend, UnreadedMessages, lastMessages)}}>freind</button>
         </div>
         :
 

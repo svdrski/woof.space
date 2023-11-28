@@ -10,11 +10,14 @@ const { default: mongoose } = require('mongoose');
 
 const App = express()
 const server = require('http').Server(App)
+
 const socketIO = require('socket.io')(server, {
   cors: {
-    origin: 'https://clientsite.onrender.com'
+    origin: 'https://clientsite.onrender.com',
+    methods: ['GET', 'POST'],
+    credentials: true
   }
-})
+});
 
 App.use(cors({ 
   origin: 'https://clientsite.onrender.com', 

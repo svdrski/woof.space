@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProfileInfo from '../Components/ProfileInfo';
 import Header from '../Components/Header';
+import MobileMenuContainer from '../Components/mobileMenuContainer';
 
 
 export default function FriendProfile (){
@@ -36,6 +37,7 @@ export default function FriendProfile (){
         <>
         <Header/>
         {user._id && <ProfileInfo data={user}/>}
+        <MobileMenuContainer/>
         </>
     )
 

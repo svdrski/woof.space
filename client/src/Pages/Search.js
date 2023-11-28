@@ -143,7 +143,7 @@ export default function Search () {
                 {/* <button onClick={showMatches}>SHowmatches</button> */}
             </div>
             </>
-           ) : <div className='noresults'>            
+           ) : <div className='noresultss'>            
 </div>}
 
         </div>

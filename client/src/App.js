@@ -42,7 +42,7 @@ function App() {
     <Route path='/'  element={<Checker><Homepage/></Checker>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/registration' element={<Registration/>}/>
-    <Route path='/search' element={<Checker><Search/></Checker>}/>
+    <Route path='/search' element={<Search/>}/>
     <Route path='/chat' element={<Checker><Chat/></Checker>}/>
     <Route path='/chat/:id' element={<Checker><Chat/></Checker>}/>
     <Route path='/profile' element={<Checker><Profile/></Checker>}/>

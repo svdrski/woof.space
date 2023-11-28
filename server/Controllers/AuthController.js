@@ -52,12 +52,12 @@ class AuthController {
         const {email, password} = req.body
         console.log(email, password)
         const user = await AuthModel.CheckEmail(email)
-        console.log("USER>", user)
         if(!email || !password) {return res.status(409).send('Empty fields')}
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
         res.cookie('token', token);
+        console.log(token)
         // res.cookie('data', result)
         res.status(200).send('ok')
     }

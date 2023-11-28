@@ -24,6 +24,11 @@ Router.post('/profile/update',verify, ProfileController.Update )
 Router.post('/profile/get/:id',verify, ProfileController.Get )
 
 
+Router.get('/check', (req, res)=>{
+    res.send('RABOTAET')
+})
+
+
 
 
 module.exports = Router

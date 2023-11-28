@@ -16,18 +16,19 @@ const socketIO = require('socket.io')(server, {
   }
 })
 
+App.use(cors({ 
+  origin: 'https://clientsite.onrender.com', 
+  methods: ['GET', 'POST'],
+  credentials: true,
+}))
+
 
 App.use(cookieParser());
 App.use(express.json())
 App.use(express.urlencoded({ extended: true }));
 App.use(express.static(path.join(__dirname, './')));
-
-App.use(cors({ 
-    origin: 'https://clientsite.onrender.com', 
-    methods: ['GET', 'POST'],
-    credentials: true,
-  }))
 App.use(Router)
+
 
 
 const port = 3333

@@ -57,7 +57,6 @@ class AuthController {
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
         res.cookie('token', token);
-        console.log(token)
         // res.cookie('data', result)
         res.status(200).send('ok')
     }

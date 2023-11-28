@@ -11,6 +11,9 @@ import { useSearchContext } from '../Components/Context/SearchContext';
 import RangeSlider from '../Components/AgeRange';
 import MobileMenuContainer from '../Components/mobileMenuContainer';
 
+const URL = process.env.REACT_APP_BASE_URL
+
+
 export default function Search () {
 
     const {userdata} = useMyContext()
@@ -44,7 +47,7 @@ export default function Search () {
 
     async function showMatches () {
         try{
-            const users = await axios.post('http://localhost:3333/search/matches',null, {
+            const users = await axios.post(`${URL}/search/matches`,null, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
@@ -62,7 +65,7 @@ export default function Search () {
           });
           setAttempts(attempts + 1)
 
-        const regLike = await axios.post('http://localhost:3333/like', {user: userdata.email, opponent: currentDog.email} )
+        const regLike = await axios.post(`${URL}/like`, {user: userdata.email, opponent: currentDog.email} )
 
     }
 
@@ -75,12 +78,12 @@ export default function Search () {
 
           setAttempts(attempts + 1)
 
-          const regDislike = await axios.post('http://localhost:3333/dislike', {user: userdata.email, opponent: currentDog.email} )
+          const regDislike = await axios.post(`${URL}/dislike`, {user: userdata.email, opponent: currentDog.email} )
     }
 
     async function getUsers() {
         try{
-            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
+            const users = await axios.post(`${URL}/search/users`,{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
@@ -135,8 +138,8 @@ export default function Search () {
 
             <div className='cardDescription'>
                 <div className='images'>
-                    <img className='previewImg' src={currentDog.photos[1] ? `http://localhost:3333/${currentDog.photos[1].slice(2, currentDog.photos[1].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
-                    <img className='previewImg' src={currentDog.photos[2] ? `http://localhost:3333/${currentDog.photos[2].slice(2, currentDog.photos[2].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
+                    <img className='previewImg' src={currentDog.photos[1] ? `${URL}/${currentDog.photos[1].slice(2, currentDog.photos[1].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
+                    <img className='previewImg' src={currentDog.photos[2] ? `${URL}/${currentDog.photos[2].slice(2, currentDog.photos[2].length)}` : 'https://storage.googleapis.com/proudcity/mebanenc/uploads/2021/03/placeholder-image.png'}/>
                 </div>
                 <h3>Description</h3>
                 <p>{currentDog.description}</p>

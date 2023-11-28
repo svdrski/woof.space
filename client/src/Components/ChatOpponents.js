@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import socket from './Socket';
 import { v4 as uuidv4 } from 'uuid';
 
+const URL = process.env.REACT_APP_BASE_URL
 
 
 export default function ChatOpponents (){
@@ -166,7 +167,7 @@ export default function ChatOpponents (){
             <div className='dialogsList'>
                 {friendsList.length > 0 && friendsList.map((item)=>(
                     <div className={`dialogPrev ${activefriend?.name === item.name && 'digprevActive'} ${UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length <= 0 && activefriend?.name !== item.name ? 'withoutmessages' : ''}` }  key={uuidv4()} onClick={()=>{setOpponentmsg(item)}}>
-                        <div className='avatar' style={{background: `url(http://localhost:3333/${item?.photos[0].slice(2, item.photos[0].length)})`}}></div>
+                        <div className='avatar' style={{background: `url(${URL}/${item?.photos[0].slice(2, item.photos[0].length)})`}}></div>
                         {item.isOnline && <span className='isOnline'></span>}
 
                         <div className='dialogData'>

@@ -4,6 +4,9 @@ import errimg from '../Img/err.svg'
 import RegistrationSteps from './RegistrationSteps'
 import { Link, useNavigate } from 'react-router-dom'
 
+const URL = process.env.REACT_APP_BASE_URL
+
+
 export default function RegistrationForm (){
 
     const navigate = useNavigate();
@@ -51,7 +54,7 @@ export default function RegistrationForm (){
 
         try{
             setSelectedFiles([])
-             await axios.post('http://localhost:3333/registration', sendData,{
+             await axios.post(`${URL}/registration`, sendData,{
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })

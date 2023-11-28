@@ -9,6 +9,7 @@ import { useMyContext } from './UserDataContext';
 import { useMessengerContext } from "./Context/MessengerContext"
 import { useSearchContext } from '../Components/Context/SearchContext';
 
+const URL = process.env.REACT_APP_BASE_URL
 
 
 export default function Header(){
@@ -22,7 +23,7 @@ export default function Header(){
 
     async function logOut (){
         localStorage.setItem('userData', '')
-        await axios.get('http://localhost:3333/logout', {withCredentials: true})
+        await axios.get(`${URL}/logout`, {withCredentials: true})
         navigate('/login')
     } 
 
@@ -43,7 +44,7 @@ export default function Header(){
 
     async function getUsers() {
         try{
-            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
+            const users = await axios.post(`${URL}/search/users`,{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
@@ -59,7 +60,7 @@ export default function Header(){
     async function showMatches () {
 
         try{
-            const users = await axios.post('http://localhost:3333/search/matches',null, {
+            const users = await axios.post(`${URL}/search/matches`,null, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             })
@@ -73,7 +74,7 @@ export default function Header(){
     }
 
     async function getOpponents (){
-        const dataList = await axios.post('http://localhost:3333/chat/users', {matches})
+        const dataList = await axios.post(`${URL}/chat/users`, {matches})
         setFriendsList(dataList.data)
         //call to get online list
         socket.emit('setUserOnline', userdata.email);
@@ -115,7 +116,7 @@ export default function Header(){
                 <h3>{userdata.dogname}</h3>
                 <button className='logout' onClick={logOut}>Log out</button>
                 </div>
-               {userdata &&  <img className='profileimage' src={`http://localhost:3333${userdata?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
+               {userdata &&  <img className='profileimage' src={`${URL}${userdata?.photos[0].slice(2, userdata[0]?.photos[0].length)}`}></img>}
             </span>
         </header>)
     )

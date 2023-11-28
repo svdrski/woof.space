@@ -5,6 +5,7 @@ import ProfileInfo from '../Components/ProfileInfo';
 import Header from '../Components/Header';
 import MobileMenuContainer from '../Components/mobileMenuContainer';
 
+const URL = process.env.REACT_APP_BASE_URL
 
 export default function FriendProfile (){
 
@@ -15,7 +16,7 @@ export default function FriendProfile (){
 
 
     const saver = async ()=>{
-        const response =  await axios.post(`http://localhost:3333/profile/get/${id}`, null ,{
+        const response =  await axios.post(`${URL}/profile/get/${id}`, null ,{
             headers: {"Contet-Type" : "application/json"},
             withCredentials: true
         })
@@ -34,7 +35,7 @@ export default function FriendProfile (){
 
 
     return(
-        <>
+        <> 
         <Header/>
         {user._id && <ProfileInfo data={user}/>}
         <MobileMenuContainer/>

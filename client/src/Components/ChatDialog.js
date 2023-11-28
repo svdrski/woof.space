@@ -9,6 +9,8 @@ import readed from '../Img/readed.svg'
 import unreaded from '../Img/unread.svg'
 
 const sendicon = import ('../Img/sendbtn.svg')
+const URL = process.env.REACT_APP_BASE_URL
+
 
 export default function ChatDialog(){
 
@@ -355,7 +357,7 @@ useEffect(()=>{
         activefriend ?
         <div className="chatFriends messageArea">
             <div className='opponentData'>
-                <div className='msgPhoto' style={{background: `url(http://localhost:3333/${activefriend?.photos[0].slice(2, activefriend.photos[0].length)})`}}></div>
+                <div className='msgPhoto' style={{background: `url(${URL}/${activefriend?.photos[0].slice(2, activefriend.photos[0].length)})`}}></div>
                 {friendsList.find(item => item?.email === activefriend?.email)?.isOnline && <span className='isOnline onlnstaus'></span>}
 
                 <h3>{activefriend?.name}</h3>

@@ -3,6 +3,8 @@ import { useEffect, useState, useContext } from 'react'
 import errimg from '../Img/err.svg'
 import { Link, useNavigate } from 'react-router-dom'
 import { cookies } from '../App'
+const URL = process.env.REACT_APP_BASE_URL
+
 
 export default function LoginForm (){
 
@@ -15,7 +17,7 @@ export default function LoginForm (){
 
         const data = Object.fromEntries(new FormData(e.target))
         try{
-             const user = await axios.post('http://localhost:3333/login', data, {
+             const user = await axios.post(`${URL}/login`, data, {
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             } )

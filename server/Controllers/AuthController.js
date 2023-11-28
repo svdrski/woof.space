@@ -52,6 +52,7 @@ class AuthController {
         const {email, password} = req.body
         console.log(email, password)
         const user = await AuthModel.CheckEmail(email)
+        console.log("USER>", user)
         if(!email || !password) {return res.status(409).send('Empty fields')}
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}

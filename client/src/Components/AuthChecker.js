@@ -9,14 +9,15 @@ const Checker = ({ children }) => {
   const {userdata, updateData} = useMyContext()
   const location = useLocation();
 
-  
+  const URL = process.env.REACT_APP_BASE_URL
+
 
   useEffect(() => {
 
 
     const checkTokenValidity = async () => {
       try {
-        const response = await axios.post('http://localhost:3333/auth', null, {
+        const response = await axios.post(`${URL}/auth`, null, {
             headers: {"Contet-Type" : "application/json"},
             withCredentials: true
         } )

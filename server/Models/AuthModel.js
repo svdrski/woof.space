@@ -41,7 +41,7 @@ class AuthModel {
         try{
             const user = await User.find({email})
             return user
-        } catch (e) {return e}
+        } catch (e) {throw e}
     }
 
 

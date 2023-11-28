@@ -12,7 +12,7 @@ const App = express()
 const server = require('http').Server(App)
 const socketIO = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:3000'
+    origin: 'https://clientsite.onrender.com'
   }
 })
 
@@ -23,7 +23,7 @@ App.use(express.urlencoded({ extended: true }));
 App.use(express.static(path.join(__dirname, './')));
 
 App.use(cors({ 
-    origin: 'http://localhost:3000', 
+    origin: 'https://clientsite.onrender.com', 
     methods: ['GET', 'POST'],
     credentials: true,
   }))

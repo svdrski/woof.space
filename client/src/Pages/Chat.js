@@ -5,7 +5,7 @@ import './Css/Chat.css'
 import sound from "../sounds/mixkit-long-pop-2358.wav"
 
 import { useMyContext } from '../Components/UserDataContext';
-
+import { useMessengerContext } from '../Components/Context/MessengerContext';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import socket from '../Components/Socket';
@@ -16,26 +16,7 @@ import MobileMenuContainer from '../Components/mobileMenuContainer';
 export default function Chat () {
 
     const {userdata} = useMyContext()
-
-
-    const [matches, SetMatches] = useState([])
-    const [friendsList, setFriendsList] = useState([])
-    const [activefriend, setActivefriend] = useState(null)
-    const [roomId, setRoomId] = useState('')
-    const [messsages, setMessages] = useState([])
-    const [shoulUpdateUsers, setShoulUpdateUsers] = useState(false);
-    const[lastMessages, setLastMessages] = useState([])
-    const [hideOnmobile, sethideOnmobile] = useState(false)
-
-    const [lastMsgAccept, setlastMsgAccept] = useState(false)
-    const [acfriendAccept, setacfriendAccept] = useState(false)
-    
-    const [UnreadedMessages, setUnreadedMessages] = useState([])
-
-
-    useEffect(()=>{
-       
-    },[])
+    const {setUnreadedMessages,UnreadedMessages, activefriend, messsages,setMessages, SetMatches } = useMessengerContext()
 
 
 
@@ -43,10 +24,13 @@ export default function Chat () {
     useEffect(()=>{
         socket.on('unreadedMessages', (data)=>{
             console.log('unreadedMessages')
-            setUnreadedMessages(data)
-            
+            setUnreadedMessages((prev)=>{ return data})
         })
     },[])
+
+
+
+
 
     useEffect(() => {
         const handleAddUnreaded = (data) => {
@@ -123,42 +107,35 @@ export default function Chat () {
     },[userdata])
 
 
+    // async function showMatches () {
 
-    async function showMatches () {
+    //     try{
+    //         const users = await axios.post('http://localhost:3333/search/matches',null, {
+    //             headers: {"Contet-Type" : "application/json"},
+    //             withCredentials: true
+    //         })
+    //         SetMatches(users.data)
 
-        try{
-            const users = await axios.post('http://localhost:3333/search/matches',null, {
-                headers: {"Contet-Type" : "application/json"},
-                withCredentials: true
-            })
-            SetMatches(users.data)
-
-        } catch(e) {console.log('Error ', e)} finally {
+    //     } catch(e) {console.log('Error ', e)} finally {
             
-        }
+    //     }
     
-    }
-
-
-
+    // }
 
     
-
-    useEffect(()=>{
-        showMatches()
-    }, [])
-
-
-    
+    // useEffect(()=>{
+    //     showMatches()
+    // }, [])
 
     return(
         <>
         <Header/>
         <div className='chatcontainer'>
-            <ChatOpponents matches={matches} friendsList={friendsList} setFriendsList={setFriendsList} setActivefriend={setActivefriend} activefriend={activefriend} roomId={roomId} setRoomId={setRoomId} messsages={messsages} setMessages={setMessages} lastMessages={lastMessages} setLastMessages={setLastMessages} UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} setlastMsgAccept={setlastMsgAccept} setacfriendAccept={setacfriendAccept} hideOnmobile={hideOnmobile} sethideOnmobile={sethideOnmobile}/>
-            <ChatDialog activefriend={activefriend} roomId={roomId} messsages={messsages} setMessages={setMessages} friendsList={friendsList} setFriendsList={setFriendsList} lastMessages={lastMessages} setLastMessages={setLastMessages}  UnreadedMessages={UnreadedMessages} setUnreadedMessages={setUnreadedMessages} matches={matches} lastMsgAccept={lastMsgAccept} acfriendAccept={acfriendAccept}/>
+            <ChatOpponents/>
+            <ChatDialog />
         </div>
-        <MobileMenuContainer setActivefriend={setActivefriend} activefriend={activefriend} sethideOnmobile={sethideOnmobile}/>
+        <MobileMenuContainer />
+        {/* setActivefriend={setActivefriend} activefriend={activefriend} sethideOnmobile={sethideOnmobile} */}
 
         </>
     )

@@ -3,7 +3,9 @@ const Router = express.Router()
 const AuthController = require('../Controllers/AuthController.js')
 const MatchController = require('../Controllers/MatchController.js')
 const ChatController = require('../Controllers/ChatController.js')
+const ProfileController = require('../Controllers/ProfileController.js')
 const upload  = require('../Middlewares/Uploads.js')
+const verify = require('../Middlewares/AuthMiddle.js')
 
 
 Router.get('/users', AuthController.AllUsers)
@@ -18,6 +20,9 @@ Router.post('/search/users', MatchController.GetList)
 
 Router.post('/search/matches', MatchController.GetMatches)
 Router.post('/chat/users', ChatController.GetOpponents)
+Router.post('/profile/update',verify, ProfileController.Update )
+Router.post('/profile/get/:id',verify, ProfileController.Get )
+
 
 
 

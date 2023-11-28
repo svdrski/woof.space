@@ -73,9 +73,28 @@ header{
 .leftnav a {
   color: #191919;
   margin-right: 15px;
-  font-size: 17px;
+  font-size: 15px;
 }
 
+.unreadedHead{
+  background-color: #4F00CF;
+  color: #fff;
+  padding: 1px 5px;
+  border-radius: 100px;
+  font-size: 10px;
+  margin: 0px 0 0px -1px;
+}
+
+.unreadedmobile{
+  border: 2px solid#fff;
+  background-color: #00C898;
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: 100px;
+  font-size: 13px;
+  position: absolute;
+  margin: 11px -13px -2px -6px;
+}
 
 .headerlogo{
   height: 40px;
@@ -110,4 +129,32 @@ h3{
 
 .logout:hover{
   cursor: pointer;
+}
+
+
+@media (max-width: 1030px) {
+
+  .navigation, .logout{
+    display: none !important;
+  }
+
+  header{
+    height: 40px !important;
+    padding: 0 12px;
+    border-radius: 0 0 18px 18px !important;
+  }
+
+  .headerlogo{
+    height: 33px;
+  }
+
+  .profileimage{
+    height: 30px;
+    width: 30px;
+  }
+
+  .rightnav h3{
+    font-size: 15px;
+    margin: 5px -5px 0 0;
+  }
 }

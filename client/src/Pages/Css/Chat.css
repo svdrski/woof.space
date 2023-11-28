@@ -3,7 +3,7 @@
     background-color: #F7F7F7;
     width: 99%;
     margin: 2px auto;
-    border-radius: 50px;
+    border-radius: 40px;
     padding: 30px;
     box-sizing: border-box;
     display: flex;
@@ -168,8 +168,10 @@ color: #fff;
     transition: all 0.3s ease
 }
 
-.sendbtn{
+.sendbtn:hover{
     cursor: pointer;
+    box-shadow: rgba(69, 11, 169, 0.386) 0px 8px 24px;
+    transition: .2s;
 }
 
 .messageArea{
@@ -298,7 +300,15 @@ color: #7c7c7c !important;
 
 
 .emptyMsg {
-    background-image: url(../../Img/Framemsg.svg);
+    background-image: url(../../Img/Groups13.svg);
+    height: 390px;
+    width: 362px;
+    margin: 60px 0 0 110px;
+    background-size: cover;
+}
+
+.noresults{
+    background-image: url(../../Img/coupleee.svg);
     height: 390px;
     width: 362px;
     margin: 60px 0 0 110px;
@@ -323,7 +333,7 @@ color: #7c7c7c !important;
 
 @media (max-width: 1030px) {
 
-    .emptyMsg{
+    .emptyMsg, .noresults{
         margin: 0 auto;
         height: 270px;
         width: 250px;
@@ -344,6 +354,6 @@ color: #7c7c7c !important;
     .messageArea{
         margin: 0;
     width: 100% !important;
-    min-height: 100%;
+    min-height: 95%;
     }
 }

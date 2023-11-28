@@ -1,0 +1,202 @@
+.imgblockProfile{
+    display: flex;
+    max-width: 650px;
+    height: 550px;
+}
+
+.profileMainPhoto{
+    width: 62%;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 40px;
+}
+
+
+.rightphotosProfile{
+    max-width: 230px;
+    width: 35%;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.profileSmPhoto{
+    height: calc(50% - 10px);
+    object-fit: cover;
+    width: 100%;
+    border-radius: 40px;
+}
+
+.personalInfo{
+    background-color: #fff;
+    border-radius: 40px;
+    padding: 30px;
+    margin-left: 20px;
+    min-width: 272px;
+
+}
+
+.nameLocat{
+    display: flex;
+    align-items: center;
+    margin-bottom: 23px;
+}
+
+.nameLocat h2 {
+    margin: 0;
+}
+.nameLocat p {
+    margin: 0;
+
+}
+
+.nameLocat img{
+    margin: 0 3px 0 15px;
+}
+
+.stringB{
+    font-weight: 800;
+    text-transform: capitalize;
+}
+
+.personalInfo p{
+    margin: 8px 0;
+    
+}
+
+.ownerData{
+    background-color: #F3F3F3;
+    padding: 4px 25px;
+    border-radius: 200px;
+    margin-top: 30px;
+    display: inline-block;
+}
+
+.ownerData p{
+    display: inline-block;
+}
+
+.edit:hover{
+    cursor: pointer;
+}
+
+.inpedit{
+    height: 44px;
+    border-radius: 18px;
+    border: 1px solid #c6c6c6;
+    width: calc(100% - 40px);
+    font-size: 15px;
+    padding: 0 20px;
+    font-weight: 600;
+    margin-bottom: 16px;
+}
+
+.personalInfo h3{
+    margin-bottom: 14px;
+}
+
+.personalInfo label{
+    margin-bottom: 5px;
+    display: block;
+}
+
+
+.savebtn{
+    background-color: #4F00CF;
+    color: #fff;
+    border-radius: 20px;
+    border: none;
+    padding: 7px 13px;
+}
+
+.savebtn:hover{
+    cursor: pointer;
+}
+
+
+.activesetngs{
+    display: block;
+    margin-top: 20px;
+}
+
+.disablsetngs{
+    display: none;
+}
+
+
+.msgbttn{
+    margin: 0 0 -14px 9px;
+    height: 42px;
+    border-radius: 100px;
+    transition: .2s;
+
+}
+
+.msgbttn:hover{
+    cursor: pointer;
+    box-shadow: rgba(69, 11, 169, 0.322) 0px 8px 24px;
+    transition: .2s;
+}
+
+
+@media (max-width: 1030px) {
+    .imgblockProfile{
+        width: 100%;
+        max-width: 100%;
+        padding: 10px;
+
+    }
+
+    .personalInfo{
+        min-width: 100%;
+    }
+
+    .personalInfo{
+        margin: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .infoContainer{
+        width: 100%;
+    }
+
+    .profileContainer{
+        height: auto;
+    margin-bottom: 20px;
+    padding-bottom: 60px;
+    }
+
+
+}
+
+@media (max-width: 600px) {
+    .imgblockProfile{
+        height: 50%;
+
+    }
+
+    .profileContainer{
+        align-content: flex-start;
+        border-radius: 20px;
+}
+
+
+
+   
+
+    .rightphotosProfile{
+        margin-left: 10px;
+    }
+
+    .profileSmPhoto{
+        height: calc(50% - 5px);
+        border-radius: 20px;
+    }
+    .profileMainPhoto{
+        border-radius: 20px;
+
+    }
+}

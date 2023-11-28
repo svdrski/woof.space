@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef, useCallback} from 'react'
 import socket from '../Components/Socket';
 import { useMyContext } from '../Components/UserDataContext';
+import { useMessengerContext } from '../Components/Context/MessengerContext';
+
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import readed from '../Img/readed.svg'
@@ -8,15 +10,15 @@ import unreaded from '../Img/unread.svg'
 
 const sendicon = import ('../Img/sendbtn.svg')
 
-export default function ChatDialog({activefriend,acfriendAccept, lastMsgAccept, roomId, messsages, setMessages, friendsList, setFriendsList, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
+export default function ChatDialog(){
 
 
     const dialogRef = useRef(null);
 
     const {userdata} = useMyContext()
+    
+    const {setStatus, status, activefriend, lastMsgAccept, roomId, messsages, setMessages, friendsList, setFriendsList, setLastMessages, UnreadedMessages, setUnreadedMessages} = useMessengerContext()
 
-    const [message, setMessage] = useState('')
-    const [status, setStatus] = useState('')
 
 
 
@@ -53,7 +55,8 @@ export default function ChatDialog({activefriend,acfriendAccept, lastMsgAccept, 
         });
             e.target.text.value = ''
 
-        socket.emit('updateOppDialogPrev', {message, id:activefriend.email, opponent: userdata.email })
+            //!!!! MESSAGE
+        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email })
 
         
     }
@@ -62,25 +65,49 @@ export default function ChatDialog({activefriend,acfriendAccept, lastMsgAccept, 
 
 
     // /2 cath message
-    useEffect(()=>{
-        socket.on('response', async (data) =>{
-            console.log('ЗДЕСЬ',activefriend)
+    // useEffect(()=>{
+    //     socket.on('response', async (data) =>{
+    //         console.log('ЗДЕСЬ',activefriend)
 
 
-            await setMessages((prevMessages) => [...prevMessages, data]);
+    //         await setMessages((prevMessages) => [...prevMessages, data]);
             
-            setFriendsList((prev)=>{
-                return prev.map(item => item)
-            })
+    //         setFriendsList((prev)=>{
+    //             return prev.map(item => item)
+    //         })
 
+    //         ////???????????????
+    //         activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+    //             console.log('3')
+    //             return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+    //         })
+    //     } )
+    // },[])
+
+    useEffect(() => {
+        const handleResponse = async (data) => {
+            console.log('ЗДЕСЬ', activefriend);
+    
+            await setMessages((prevMessages) => [...prevMessages, data]);
+    
+            setFriendsList((prev) => prev.map((item) => item));
+    
             ////???????????????
-            activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-                console.log('3')
-                return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
-            })
-        } )
-    },[])
-
+            activefriend &&
+                UnreadedMessages.length &&
+                setUnreadedMessages((prev) => {
+                    console.log('3');
+                    return prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
+                });
+        };
+    
+        socket.on('response', handleResponse);
+    
+        // Блок очистки эффекта
+        return () => {
+            socket.off('response', handleResponse);
+        };
+    }, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
     
 
     // useEffect(() => {
@@ -235,31 +262,31 @@ useEffect(() => {
 
 
 
-    // useEffect(()=>{
-    //     socket.on('makeReaded',(data)=>{
-    //         console.log('makeReaded',activefriend, data)
+    useEffect(()=>{
+        socket.on('makeReaded',(data)=>{
+            console.log('makeReaded',activefriend, data)
     
             
-    //         if(activefriend){
+            if(activefriend){
         
     
-    //             console.log("NONNONONO", activefriend.email === data.opponent)
+                console.log("NONNONONO", activefriend.email === data.opponent)
     
-    //             if(activefriend && activefriend.email === data.opponent) {
+                if(activefriend && activefriend.email === data.opponent) {
             
-    //                 setTimeout(()=>{
-    //                     setMessages((prev)=>{
-    //                         return prev.map(item =>  ({...item, isReaded :true}))
-    //                     })
+                    setTimeout(()=>{
+                        setMessages((prev)=>{
+                            return prev.map(item =>  ({...item, isReaded :true}))
+                        })
                         
-    //                     socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
-    //                 }, 400)
-    //             }
-    //         }
+                        socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
+                    }, 400)
+                }
+            }
     
     
-    //     })
-    // },[]) 
+        })
+    },[]) 
 
 
 
@@ -332,7 +359,7 @@ useEffect(()=>{
                 {friendsList.find(item => item?.email === activefriend?.email)?.isOnline && <span className='isOnline onlnstaus'></span>}
 
                 <h3>{activefriend?.name}</h3>
-                <Link to='/profile'>show profile</Link>
+                <Link to={`/profile/${activefriend._id}`}>Profile</Link>
             </div>
 
 
@@ -385,6 +412,6 @@ useEffect(()=>{
         </div>
         :
 
-        <div className='emptyMsg'></div>
+        friendsList.length > 0 ? <div className='emptyMsg'></div> :   <div className='noresults'></div>
     )
 }

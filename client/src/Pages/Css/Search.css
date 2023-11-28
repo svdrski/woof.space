@@ -195,7 +195,7 @@
   
 
 
-  .noresults{
+  .noresultss{
     background-image: url(../../Img/noresults.svg);
     height: 400px;
         width: 312px;
@@ -249,9 +249,7 @@
 
 
   @media (max-width: 1030px) {
-    header{
-        display: none;
-    }
+
     .blockContainer{
         padding: 8px;
         width: 100%;

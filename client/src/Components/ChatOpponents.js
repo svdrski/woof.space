@@ -2,30 +2,33 @@ import axios from 'axios'
 import '../Pages/Css/Chat.css'
 import { useEffect, useState } from 'react'
 import { useMyContext } from '../Components/UserDataContext';
+import { useMessengerContext } from '../Components/Context/MessengerContext';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import socket from './Socket';
 import { v4 as uuidv4 } from 'uuid';
 
 
 
-export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hideOnmobile, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages}){
+export default function ChatOpponents (){
+
+    const { id } = useParams();
+    const navigate = useNavigate();
 
 
 
     const {userdata} = useMyContext()
 
-    const [forceUpdate, setForceUpdate] = useState(false);
-
+    const {matches,friendsList, sethideOnmobile,extraOpponent,  hideOnmobile,setExtraOpponent, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages} =  useMessengerContext()
  
 
-
-
-    async function getOpponents (){
-        const dataList = await axios.post('http://localhost:3333/chat/users', {matches})
-        setFriendsList(dataList.data)
-        //call to get online list
-        socket.emit('setUserOnline', userdata.email);
-        setlastMsgAccept(true)
-    }
+    // async function getOpponents (){
+    //     const dataList = await axios.post('http://localhost:3333/chat/users', {matches})
+    //     setFriendsList(dataList.data)
+    //     //call to get online list
+    //     socket.emit('setUserOnline', userdata.email);
+    //     setlastMsgAccept(true)
+    // }
 
 
     // Update friends list - online/offline
@@ -54,15 +57,15 @@ export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hi
 
 
 
-    useEffect(()=>{
-        matches.length > 0 && getOpponents ()
-    }, [matches])
+    // useEffect(()=>{
+    //     matches.length > 0 && getOpponents ()
+    // }, [matches])
 
 
 
 
-    function setOpponentmsg (item){
-        console.log('УСТАНОВИЛСЯ')
+     function setOpponentmsg (item){
+        console.log('УСТАНОВИЛСЯ', item)
         setActivefriend(item)
         setacfriendAccept(true)
         socket.emit('leaveRoom', roomId);
@@ -75,22 +78,49 @@ export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hi
 
         // ???????????????????
     
-        setUnreadedMessages((prev)=>{
-            return []
-        })
-        // UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-        //     console.log('2')
-        //     return prev.map(msg => msg.id === item.email ? {...msg, isReaded: true} : msg)
+        // setUnreadedMessages((prev)=>{
+        //     return []
         // })
+        UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
+            console.log('2')
+            return prev.filter(msg => msg.id !== item.email )
+        })
 
 
         socket.emit('createDialog', fullId)
         socket.emit('setReaded', {opponent: item.email, user: userdata.email})
+        setExtraOpponent({})
     }
 
     // useEffect(()=>{
     //     console.log(activefriend)
     // },[activefriend])
+
+
+
+    ///если есть айди в ссылке то открыть диалог
+    // async function find(){
+    //     const user = await friendsList.find(item => item._id === id)
+    //     if(user) {
+    //         console.log("FHIASFUIOAGFUASFOASOGHIOASHGIOASHGIOAHGIPHASBGIBIPGBASIOKBGJKASNGKPBASJKGBJ")
+    //         setOpponentmsg(user)
+    //         navigate('/chat')
+    //     }
+        
+
+    // }
+
+    // useEffect(()=>{
+    //     find()
+    // },[friendsList])
+
+
+    useEffect(()=>{
+        if(extraOpponent._id) {
+            console.log('EСТЬЬЬ', extraOpponent)
+            setOpponentmsg(extraOpponent)
+        }
+    },[])
 
 
     useEffect(()=>{
@@ -127,11 +157,14 @@ export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hi
 
 
 
+
+
+
     return(
         <div className={`chatFriends ${hideOnmobile ? 'openChat' :''}`}>
-        <h3>You have {matches.length} matches</h3>
+        <h3> {matches.length ? `You have  ${matches.length}  matches` : 'You will see matches here'}</h3>
             <div className='dialogsList'>
-                {friendsList.length && friendsList.map((item)=>(
+                {friendsList.length > 0 && friendsList.map((item)=>(
                     <div className={`dialogPrev ${activefriend?.name === item.name && 'digprevActive'} ${UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length <= 0 && activefriend?.name !== item.name ? 'withoutmessages' : ''}` }  key={uuidv4()} onClick={()=>{setOpponentmsg(item)}}>
                         <div className='avatar' style={{background: `url(http://localhost:3333/${item?.photos[0].slice(2, item.photos[0].length)})`}}></div>
                         {item.isOnline && <span className='isOnline'></span>}
@@ -178,13 +211,16 @@ export default function ChatOpponents ({matches,friendsList, sethideOnmobile, hi
                                 : 'loading...'} </p> */}
                             </div>
                         </div>
+
                     </div>
                 ))}
 
             </div>
-           
+            <button onClick={()=>{console.log(extraOpponent)}}>Show</button>
+
         </div>
     )
 }
+
 
 

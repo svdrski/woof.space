@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-
+const {AuthModel} = require('../Models/AuthModel.js')
 
 function verify ( req, res, next) {
 
@@ -11,8 +11,14 @@ function verify ( req, res, next) {
         jwt.verify(token, 'KEY', async (err, res)=>{
             if(err) { return res.status(403).send('Token verification failed')}
             const user = await AuthModel.CheckEmail(res.email)
-            res.status(200).send(user)
-            next()
+            
+            if(user) {
+                next()
+                return
+
+            }  else  { 
+                return res.status(404).send('User Not Found')
+            }
     })
 }
 

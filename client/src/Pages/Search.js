@@ -7,22 +7,28 @@ import axios from 'axios';
 import Header from '../Components/Header';
 import SearchCard from '../Components/SearchCard';
 import { useMyContext } from '../Components/UserDataContext';
+import { useSearchContext } from '../Components/Context/SearchContext';
 import RangeSlider from '../Components/AgeRange';
 import MobileMenuContainer from '../Components/mobileMenuContainer';
 
 export default function Search () {
 
     const {userdata} = useMyContext()
+    const {            breed, setBreed,
+        attempts, setAttempts,
+        dogsList, setDogsList,
+        currentDog, setCurrentDog,
+        currentCount, setCount,
+        rangeValues, setRangeValues,
+        visibleFilters, setVisibleFilters} = useSearchContext ()
 
 
     const navigate = useNavigate();
-    const [breed, setBreed] = useState(null)
-    const [attempts, setAttempts] = useState(userdata.attempts)
-    const [dogsList, setDogsList] = useState([])
-    const [currentDog, setCurrentDog] = useState(null)
-    const [currentCount, setCount] = useState(0)
-    const [rangeValues, setRangeValues] = useState([0, 20]);
-    const [visibleFilters, setVisibleFilters] = useState(false)
+
+
+
+    console.log('LIIST', dogsList)
+
 
 
 
@@ -31,23 +37,7 @@ export default function Search () {
     }, [dogsList, currentCount]);
 
 
-    async function getUsers() {
-        try{
-            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
-                headers: {"Contet-Type" : "application/json"},
-                withCredentials: true
-            })
-            console.log(users.data)
-            setDogsList(users.data);
-
-        } catch(e) {console.log('Error ', e)}
-    }
-
-
-    useEffect(()=>{
-
-        getUsers()
-    },[])
+   
 
 
 
@@ -87,6 +77,20 @@ export default function Search () {
 
           const regDislike = await axios.post('http://localhost:3333/dislike', {user: userdata.email, opponent: currentDog.email} )
     }
+
+    async function getUsers() {
+        try{
+            const users = await axios.post('http://localhost:3333/search/users',{gender: userdata.gender === 'boy' ? 'boy' : 'girl',  breed: breed && breed.breed, age: rangeValues, city:userdata.city }, {
+                headers: {"Contet-Type" : "application/json"},
+                withCredentials: true
+            })
+            console.log(users.data)
+            setDogsList(users.data);
+
+        } catch(e) {console.log('Error ', e)}
+    }
+
+
 
 
 

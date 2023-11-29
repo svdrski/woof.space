@@ -37,7 +37,7 @@ class AuthController {
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
-        res.cookie('token', token, { domain: '.onrender.com' ,  httpOnly: true, sameSite: 'None', secure: true });
+        res.cookie('token', token, {   httpOnly: true, sameSite: 'None', secure: true });
         res.status(200).send('ok')
     }
 
@@ -73,7 +73,7 @@ class AuthController {
             await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city, photosArr)
             
             const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
-            res.cookie('token', token, {  domain: '.onrender.com' , httpOnly: true, sameSite: 'None', secure: true });
+            res.cookie('token', token, {  httpOnly: true, sameSite: 'None', secure: true });
             res.status(200).send('success')
 
 

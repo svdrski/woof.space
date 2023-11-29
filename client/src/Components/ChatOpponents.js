@@ -23,14 +23,6 @@ export default function ChatOpponents (){
     const {matches,friendsList, sethideOnmobile,extraOpponent,  hideOnmobile,setExtraOpponent, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages} =  useMessengerContext()
  
 
-    // async function getOpponents (){
-    //     const dataList = await axios.post('http://localhost:3333/chat/users', {matches})
-    //     setFriendsList(dataList.data)
-    //     //call to get online list
-    //     socket.emit('setUserOnline', userdata.email);
-    //     setlastMsgAccept(true)
-    // }
-
 
     // Update friends list - online/offline
 
@@ -58,10 +50,6 @@ export default function ChatOpponents (){
 
 
 
-    // useEffect(()=>{
-    //     matches.length > 0 && getOpponents ()
-    // }, [matches])
-
 
 
 
@@ -77,11 +65,7 @@ export default function ChatOpponents (){
       
         sethideOnmobile(true)
 
-        // ???????????????????
-    
-        // setUnreadedMessages((prev)=>{
-        //     return []
-        // })
+   
         UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
             console.log('2')
             return prev.filter(msg => msg.id !== item.email )
@@ -90,32 +74,11 @@ export default function ChatOpponents (){
 
         socket.emit('createDialog', fullId)
         console.log('Установится для id>', item.email, 'recipientEmail', userdata.email)
-        socket.emit('setReaded', {opponent: item.email, user: userdata.email})
+        socket.emit('setReaded', {opponent: item.email, user: userdata.email, roomId:id})
         setExtraOpponent({})
     }
 
-    // useEffect(()=>{
-    //     console.log(activefriend)
-    // },[activefriend])
-
-
-
-    ///если есть айди в ссылке то открыть диалог
-    // async function find(){
-    //     const user = await friendsList.find(item => item._id === id)
-    //     if(user) {
-    //         console.log("FHIASFUIOAGFUASFOASOGHIOASHGIOASHGIOAHGIPHASBGIBIPGBASIOKBGJKASNGKPBASJKGBJ")
-    //         setOpponentmsg(user)
-    //         navigate('/chat')
-    //     }
-        
-
-    // }
-
-    // useEffect(()=>{
-    //     find()
-    // },[friendsList])
-
+ 
 
     useEffect(()=>{
         if(extraOpponent._id) {
@@ -202,27 +165,9 @@ export default function ChatOpponents (){
                                
                                 }
                                 </p>
-
-
-                                {/* <p>
-                                 {UnreadedMessages.length ?
-                                 UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1]?.text ?
-                                    !UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1].isReaded ?
-                                        UnreadedMessages.filter(message => message.id === item.email)[UnreadedMessages.filter(message => message.id === item.email).length - 1].text 
-                                        // : 'no messages..'
-                                        // : 'no messages..'
-                                        // : 'no messages..'}
-                                       : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
-                                        : lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'
-                                        :lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'} 
-                               
-                                </p> */}
                                 {UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length > 0 && <span className='unreadedMsg'>{UnreadedMessages.filter(message => (message.id === item.email && !message.isReaded)).length} </span>}
 
-                                {/* <p>
-                                {lastMessages ? 
-                                `${lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text ? lastMessages.find(message => message?.id ===  item.email || message?.recipientEmail === item.email)?.text : 'no messages..'}` 
-                                : 'loading...'} </p> */}
+                              
                             </div>
                         </div>
 
@@ -230,8 +175,6 @@ export default function ChatOpponents (){
                 ))}
 
             </div>
-            <button onClick={()=>{console.log(lastMessages)}}>Show</button>
-
         </div>
     )
 }

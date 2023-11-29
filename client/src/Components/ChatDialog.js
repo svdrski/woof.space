@@ -2,11 +2,21 @@ import { useEffect, useState, useRef, useCallback} from 'react'
 import socket from '../Components/Socket';
 import { useMyContext } from '../Components/UserDataContext';
 import { useMessengerContext } from '../Components/Context/MessengerContext';
-
+import emojiIcn from '../Img/emoj.svg'
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import readed from '../Img/readed.svg'
 import unreaded from '../Img/unread.svg'
+
+
+
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
+
+
+
+
+
 
 const sendicon = import ('../Img/sendbtn.svg')
 const URL = process.env.REACT_APP_BASE_URL
@@ -16,11 +26,25 @@ export default function ChatDialog(){
 
 
     const dialogRef = useRef(null);
-
     const {userdata} = useMyContext()
-    
     const {setStatus, status, activefriend, lastMsgAccept, roomId, messsages, setMessages, friendsList, setFriendsList, setLastMessages, UnreadedMessages, setUnreadedMessages} = useMessengerContext()
 
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [message, setMessage] = useState('')
+
+    const toggleEmojiPicker = () => {
+      setShowEmojiPicker(!showEmojiPicker);
+    };
+  
+    const handleEmojiSelect = (emoji) => {
+        console.log(data)
+      // Вставка выбранного emoji в текущий текст сообщения
+    };
+
+    
+
+
+    let newTextValue = ''
 
 
 
@@ -32,10 +56,9 @@ export default function ChatDialog(){
             const hours = currentTime.getHours().toString().padStart(2, '0');
             const minutes = currentTime.getMinutes().toString().padStart(2, '0');
             const time = `${hours}:${minutes}`;
-            const newTextValue = e.target.text.value
 
-            newTextValue.length > 0 && socket.emit('message', {
-                text: e.target.text.value,
+            message.length > 0 && socket.emit('message', {
+                text: message,
                 name: userdata.name,
                 id: userdata.email,
                 recipientEmail: activefriend.email,
@@ -51,43 +74,62 @@ export default function ChatDialog(){
         setLastMessages((prev) => {
             return prev.map((item) =>
                 item.roomId === [userdata.email, activefriend.email].sort().join('')
-                    ? { ...item, text: newTextValue }
+                    ? { ...item, text: message }
                     : item
             );
         });
-            e.target.text.value = ''
+            setMessage('')
 
             //!!!! MESSAGE
-        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:newTextValue })
+        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:message })
 
         
     }
 
+    // const sender = (e) =>{
+    //     e.preventDefault()
 
+    //         const currentTime = new Date();
+    //         const hours = currentTime.getHours().toString().padStart(2, '0');
+    //         const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+    //         const time = `${hours}:${minutes}`;
+    //         newTextValue = newTextValue + e.target.text.value
 
-
-    // /2 cath message
-    // useEffect(()=>{
-    //     socket.on('response', async (data) =>{
-    //         console.log('ЗДЕСЬ',activefriend)
-
-
-    //         await setMessages((prevMessages) => [...prevMessages, data]);
-            
-    //         setFriendsList((prev)=>{
-    //             return prev.map(item => item)
+    //         newTextValue.length > 0 && socket.emit('message', {
+    //             text: e.target.text.value,
+    //             name: userdata.name,
+    //             id: userdata.email,
+    //             recipientEmail: activefriend.email,
+    //             SocketID: socket.id,
+    //             roomId: roomId,
+    //             time
     //         })
 
-    //         ////???????????????
-    //         activefriend &&  UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-    //             console.log('3')
-    //             return prev.map(msg => msg.id === activefriend?.email ? {...msg, isReaded: true} : msg)
+    //         setUnreadedMessages((prev)=>{
+    //             return []
     //         })
-    //     } )
-    // },[])
+
+    //     setLastMessages((prev) => {
+    //         return prev.map((item) =>
+    //             item.roomId === [userdata.email, activefriend.email].sort().join('')
+    //                 ? { ...item, text: newTextValue }
+    //                 : item
+    //         );
+    //     });
+    //         e.target.text.value = ''
+
+    //         //!!!! MESSAGE
+    //     socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:newTextValue })
+
+        
+    // }
 
 
 
+
+
+
+    // Получение ответа 
     useEffect(() => {
         const handleResponse = async (data) => {
             console.log('ЗДЕСЬ', activefriend);
@@ -113,31 +155,6 @@ export default function ChatDialog(){
         };
     }, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
     
-
-    // useEffect(() => {
-    //     const handleResponse = async (data) => {
-    //         console.log('ЗДЕСЬ', activefriend);
-    
-    //         await setMessages((prevMessages) => [...prevMessages, data]);
-    
-    //         setFriendsList((prev) => prev.map((item) => item));
-    
-    //         ////???????????????
-    //         activefriend &&
-    //             UnreadedMessages.length &&
-    //             setUnreadedMessages((prev) => {
-    //                 console.log('3');
-    //                 return prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
-    //             });
-    //     };
-    
-    //     socket.on('response', handleResponse);
-    
-    //     return () => {
-    //         // Очищаем обработчик при размонтировании компонента или изменении activefriend
-    //         socket.off('response', handleResponse);
-    //     };
-    // }, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
 
 
     
@@ -216,23 +233,6 @@ useEffect(() => {
 
 
 
-
-//
-
-
-    //!!!!!!!!!
-
-    // useEffect(() => {
-    //     socket.on('response', (data) => {
-    //         setMessages((prevMessages) => [...prevMessages, data]);
-    //         setForceUpdate((prev) => !prev); // изменение флага
-    //     });
-    // }, [socket, setMessages]);
-
-
-
-
-
     const isTyping = () => {
         console.log("TYPING")
         socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
@@ -267,39 +267,12 @@ useEffect(() => {
 
 
 
-    // useEffect(()=>{
-    //     socket.on('makeReaded',(data)=>{
-    //         console.log('makeReaded',activefriend, data)
-    
-            
-    //         if(activefriend){
-        
-    
-    //             console.log("NONNONONO", activefriend.email === data.opponent)
-    
-    //             if(activefriend && activefriend.email === data.opponent) {
-            
-    //                 setTimeout(()=>{
-    //                     setMessages((prev)=>{
-    //                         return prev.map(item =>  ({...item, isReaded :true}))
-    //                     })
-                        
-    //                     socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
-    //                 }, 400)
-    //             }
-    //         }
-    
-    
-    //     })
-    // },[]) 
-
-
 
 //    обновить сообщения если у обоих открыты диалоги
 
    useEffect(() => {
     const handleMakeReaded = (data) => {
-        console.log('makeReaded', activefriend, data);
+        console.log('ПРОЧИТАТЬ!!!!!', activefriend, data);
 
         if (activefriend && activefriend.email === data.opponent) {
             setTimeout(() => {
@@ -327,9 +300,7 @@ useEffect(() => {
 
 
 
-
-
-
+//Cделать все сообщения прочитанными в диалоге
 
 useEffect(()=>{
     socket.on('finisgMsgUpdate', (data) => {
@@ -407,13 +378,26 @@ useEffect(()=>{
 
            
 
+            <span className={showEmojiPicker ? "emojiActive" : "emojiDisable"}>
+                <Picker  data={data} onEmojiSelect={(e)=>{
 
+                    setMessage((prev)=>{
+                        return prev + e.native
+                    })
+                    // newTextValue += e.native
+                    
+                    }} />
+            </span>
+            
+           
             <form className='sendmsg' onSubmit={sender}>
-                <input className='enter' onKeyDown={isTyping} name='text'  type="text"/>
-
+                <input className='enter' value={message} onKeyDown={isTyping} onChange={(e)=>{setMessage(e.target.value)}} name='text'  type="text"/>
+                <img onClick={toggleEmojiPicker} className='imgEmoj' src={emojiIcn}/>
                 <input type='submit' className='sendbtn' value=''/>
             </form>
             {/* <button onClick={()=>{console.log(activefriend, UnreadedMessages, lastMessages)}}>freind</button> */}
+
+            
         </div>
         :
 

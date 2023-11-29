@@ -85,8 +85,12 @@ socketIO.on('connection', (socket)=>{
 
     socket.on('setReaded', async (data) => {
       const updateReaded = await message.updateMany({id: data.opponent, recipientEmail: data.user},{isReaded: true})
+
+      socketIO.to(data.roomId).emit('finisgMsgUpdate', data)
+      ///СЮДА
     })
 
+    
     // save message to db and send to client dialog
     socket.on('message', async (data) => {
       const newMessage = new message(data)

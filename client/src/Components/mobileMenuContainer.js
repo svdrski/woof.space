@@ -9,6 +9,7 @@ import heartImg from '../Img/heartt.svg'
 import activeHeart from '../Img/Heart1.svg'
 import messageImg from '../Img/Chat1.svg'
 import profileImg from '../Img/Group.svg'
+import activeProf from '../Img/activeProfile.svg'
 import { useEffect, useState } from "react"
 import { useMessengerContext } from "./Context/MessengerContext"
 import { useSearchContext } from '../Components/Context/SearchContext';
@@ -40,7 +41,10 @@ export default function MobileMenuContainer () {
             <Link to={'/search'} ><img src={location.pathname === '/search' ? lupaactive : lupaimg}/> {dogsList.length > 0 &&  <span className='unreadedmobile'>{dogsList.length}</span>}</Link>
             <Link to={'/chat'}  onClick={clearActivefriend} ><img src={location.pathname === '/chat' && activefriend === null? activeHeart : heartImg} /></Link>
             <Link to={'/chat'}  ><img src={location.pathname === '/chat' && activefriend !== null? activechat: messageImg}/> {UnreadedMessages.length > 0 &&  <span className='unreadedmobile'>{UnreadedMessages.length}</span>}</Link>
-            <Link to={'/profile'}><img src={profileImg}/></Link>
+            <Link to={'/profile'}><img src={location.pathname === '/profile' ?activeProf : profileImg}/></Link>
         </div>
+
+
+
     )
 }

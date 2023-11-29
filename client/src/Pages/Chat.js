@@ -32,33 +32,6 @@ export default function Chat () {
 
 
 
-    useEffect(() => {
-        const handleAddUnreaded = (data) => {
-            console.log(activefriend, '55');
-
-            if((activefriend === null) || (activefriend.email !== data.id) ) {
-                setUnreadedMessages((prev) => [...prev, data]);
-            }
-    
-            console.log('ADD', data, UnreadedMessages);
-            
-            // activefriend &&
-            //     UnreadedMessages.length &&
-            //     setUnreadedMessages((prev) => {
-            //         const msg = prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
-            //         const idList = msg.map((item) => item._id);
-            //         socket.emit('saveReaded', idList);
-            //         return msg;
-            //     });
-        };
-    
-        socket.on('addUnreaded', handleAddUnreaded);
-    
-        return () => {
-            socket.off('addUnreaded', handleAddUnreaded);
-        };
-    }, [activefriend, UnreadedMessages]);
-
     
     
 

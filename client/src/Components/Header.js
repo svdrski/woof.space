@@ -17,7 +17,7 @@ export default function Header(){
     const navigate = useNavigate();
     const {userdata} = useMyContext()
 
-    const {UnreadedMessages, setUnreadedMessages, SetMatches, setlastMsgAccept, setFriendsList, matches } = useMessengerContext()
+    const {UnreadedMessages, setUnreadedMessages, activefriend, SetMatches, setlastMsgAccept, setFriendsList, matches } = useMessengerContext()
     const {dogsList, setDogsList, breed, rangeValues}= useSearchContext()
 
 
@@ -96,6 +96,30 @@ export default function Header(){
     }, [matches])
 
 
+
+
+        // Обновить последние сообщения у собеседника
+
+        useEffect(() => {
+            const handleAddUnreaded = (data) => {
+    
+                if((activefriend === null) || (activefriend.email !== data.id) ) {
+                    setUnreadedMessages((prev) => [...prev, data]);
+                }
+                console.log('ADD', data, UnreadedMessages);
+                
+              
+            };
+        
+            socket.on('addUnreaded', handleAddUnreaded);
+        
+            return () => {
+                socket.off('addUnreaded', handleAddUnreaded);
+            };
+        }, [activefriend, UnreadedMessages]);
+    
+
+        
 
 
     return(

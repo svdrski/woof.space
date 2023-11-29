@@ -154,8 +154,8 @@ color: #fff;
     height: 45px;
     border-radius: 100px;
     border: 1px solid #C9C9C9;
-    padding: 0 20px;
-    box-sizing: border-box;
+    padding: 0 20px 0 45px;
+        box-sizing: border-box;
 }
 
 .sendbtn{
@@ -356,4 +356,23 @@ color: #7c7c7c !important;
     width: 100% !important;
     min-height: 95%;
     }
+}
+
+
+
+.emojiActive{
+    display: block;
+}
+
+.imgEmoj:hover{
+    cursor: pointer;
+}
+
+.emojiDisable{
+    display: none;
+}
+
+.imgEmoj{
+    position: absolute;
+  margin-left: 13px;
 }

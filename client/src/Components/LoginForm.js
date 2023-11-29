@@ -21,7 +21,10 @@ export default function LoginForm (){
                 headers: {"Contet-Type" : "application/json"},
                 withCredentials: true
             } )
+           if(user) {
+            console.log("ПОЛЬЗОВАОТ", user)
             navigate('/search')
+        }
         } catch(e) {
             setMessage(e.response?.data)
         }

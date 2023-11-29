@@ -59,6 +59,7 @@ class AuthController {
         res.cookie('token', token);
         // res.cookie('data', result)
         res.status(200).send('ok')
+        console.log('ОТПРАВИЛСЯ')
     }
 
 

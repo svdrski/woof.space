@@ -139,14 +139,14 @@ h3{
   }
 
   header{
-    height: 40px !important;
-    padding: 0 12px;
+    height: 50px !important;
+        padding: 0 12px;
     border-radius: 0 0 18px 18px !important;
   }
 
   .headerlogo{
-    height: 33px;
-  }
+    height: 26px;
+    }
 
   .profileimage{
     height: 30px;

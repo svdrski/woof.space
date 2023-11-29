@@ -252,7 +252,10 @@
   @media (max-width: 1030px) {
 
     .noresultss{
-        margin: 30px 0px 0px 20px;
+        height: 240px !important;
+        width: 190px !important;
+        background-size: cover !important;
+        margin: 0 auto !important;
 
     }
 
@@ -262,6 +265,8 @@
         overflow: hidden;
         border-radius: 18px;
         margin-bottom: 70px;
+        min-height: 130px !important;
+        height: calc(100vh - 123px) !important;
     }
 
     .filtersBox{

@@ -3,8 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const jwt = require('jsonwebtoken')
-
-
+const KEY = process.env.JWT_KEY;
 
 
 class AuthController {
@@ -12,21 +11,17 @@ class AuthController {
 
     static async AllUsers(req, res) {
         const token = req.cookies.token
-        // console.log(token)
-        jwt.verify(token, 'KEY',async (err, decoded)=>{
+        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
-            // console.log(decoded)
             const users = await AuthModel.GetAll(decoded.email)
             res.status(201).send(users)
         })
-        // const users = await AuthModel.GetAll()
-        // console.log(users)
-        // res.send(users)
+
     }
 
     static  Auth  (req, res) {
         const token = req.cookies.token
-        jwt.verify(token, 'KEY',async (err, decoded)=>{
+        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
             const user = await AuthModel.CheckEmail(decoded.email)
             res.status(201).send(...user)
@@ -35,31 +30,15 @@ class AuthController {
 
 
 
-    // static async GetLoggedInUser (req, res) {
-
-    //     const token = req.cookies.token
-    //     if(!token) {return res.status(401).send('Unauthorized')}
-    //     jwt.verify(token, 'KEY', async (err, result)=>{
-    //         if(err) { return res.status(403).send('Token verification failed')}
-    //         const user = await AuthModel.CheckEmail(result.email)
-    //         res.status(200).send(user)
-    //     })
-         
-
-    // }
-
     static async Login (req, res)  {
         const {email, password} = req.body
-        console.log(email, password)
         const user = await AuthModel.CheckEmail(email)
         if(!email || !password) {return res.status(409).send('Empty fields')}
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
-        const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
+        const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
         res.cookie('token', token, { sameSite: 'None', secure: true });
-        // res.cookie('data', result)
         res.status(200).send('ok')
-        console.log('ОТПРАВИЛСЯ')
     }
 
 
@@ -89,12 +68,11 @@ class AuthController {
                     const relativePath = path.relative(__dirname, a.path);
                     photosArr.push(relativePath.replace(/\\/g, '/')); 
                 });
-                // console.log(photosArr);
             }
 
             await AuthModel.Registration (finalPassword, name, email,dogname, breed, age, gender, description, city, photosArr)
             
-            const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
+            const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
             res.cookie('token', token);
             res.status(200).send('success')
 

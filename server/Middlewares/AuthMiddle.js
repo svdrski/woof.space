@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const {AuthModel} = require('../Models/AuthModel.js')
+const KEY = process.env.JWT_KEY
 
 function verify ( req, res, next) {
 
@@ -8,7 +9,7 @@ function verify ( req, res, next) {
 
     // const token =  req.headers["authorization"];
     if(!token) {return res.status(401).send('Unauthorized')}
-        jwt.verify(token, 'KEY', async (err, res)=>{
+        jwt.verify(token, `${KEY}`, async (err, res)=>{
             if(err) { return res.status(403).send('Token verification failed')}
             const user = await AuthModel.CheckEmail(res.email)
             

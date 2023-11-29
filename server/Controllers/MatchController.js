@@ -1,5 +1,6 @@
 const MatchModel = require('../Models/MatchModel.js')
 const jwt = require('jsonwebtoken')
+const KEY = process.env.JWT_KEY
 
 
 class MatchController {
@@ -17,7 +18,7 @@ class MatchController {
     static GetList (req, res){
         const {gender, breed, age, city} = req.body
         const token = req.cookies.token
-        jwt.verify(token, 'KEY',async (err, decoded)=>{
+        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
             const users = await MatchModel.getList(decoded.email, gender, breed, age, city)
             res.status(201).send(users)
@@ -26,7 +27,7 @@ class MatchController {
 
     static GetMatches (req, res) {
         const token = req.cookies.token
-        jwt.verify(token, 'KEY',async (err, decoded)=>{
+        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
             if(err){return res.status(401).send('Auth failed')}
             const users = await MatchModel.getMatches(decoded.email)
             res.status(201).send(users)

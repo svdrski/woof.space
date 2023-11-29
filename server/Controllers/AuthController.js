@@ -56,7 +56,7 @@ class AuthController {
         if(!user.length) {return res.status(409).send('Email not found')}
         if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
         const token = await jwt.sign({email}, 'KEY', {expiresIn: '1h'})
-        res.cookie('token', token);
+        res.cookie('token', token, { sameSite: 'None', secure: true });
         // res.cookie('data', result)
         res.status(200).send('ok')
         console.log('ОТПРАВИЛСЯ')

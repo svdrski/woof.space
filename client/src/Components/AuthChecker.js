@@ -18,13 +18,11 @@ const Checker = ({ children }) => {
     const checkTokenValidity = async () => {
       try {
         const response = await axios.post(`${URL}/auth`, null, {
-          headers: {
-              "Content-Type": "application/json",
-              "Access-Control-Allow-Origin": "https://clientsite.onrender.com",
-              "Access-Control-Allow-Credentials": true
+            headers: {"Contet-Type" : "application/json",
+            "Access-Control-Allow-Origin": "https://clientsite.onrender.com",
           },
-          withCredentials: true
-      });
+            withCredentials: true
+        } )
         // console.log(response.data)
         if (response.status === 201) {
           updateData(response.data)

@@ -1,5 +1,5 @@
 .login-background {
-    background-image: url(../../Img/loginBack.jpg);
+    background-image: url(../../Img/bluredback.png);
     height: calc(100vh - 60px);
     background-size: cover;
     border-radius: 50px;

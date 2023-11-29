@@ -1,6 +1,10 @@
 import './Css/Homepage.css'
 import { Link } from 'react-router-dom'
 import logo from '../Img/logo.svg'
+import biglogo from '../Img/bigLogo.svg'
+import dogimg from '../Img/dosgimg.jpg'
+import lightHeart from '../Img/lightheart.svg'
+import mockup from '../Img/mockup.png'
 import MobileMenuContainer from '../Components/mobileMenuContainer'
 import Header from '../Components/Header'
 import { useMyContext } from '../Components/UserDataContext';
@@ -12,24 +16,49 @@ export default function Homepage (){
     return(
         <>
          <Header/>
-        <div className="container">
-            <section className="left-side block-area">
-                <img src={logo}></img>
-                <h1>Let’s do something together !</h1>
-                <h2>Connecting Dogs, Creating Bonds: Where Canine Companionship Begins</h2>
-            <Link to='/login'><button>Let's start</button></Link>
-            </section>
+        <div className={`contContainer ${userdata._id ? "logvh" : ''}`}>
+        {!userdata._id &&
+            <div className='navigate'>
+                <img src={logo}/>
+                
+                    <nav>
+                    <Link  to='/Login'>Login</Link>
+                    <Link className='ml' to='/registration'>Registration</Link>
+                    </nav>
+                
+            </div>
+        }
+            <div className='mainBox'>
+                <div className='leftSide'>
+                    <div className='headerContainer'>
+                        <img src={biglogo}/>
+                        <h1>Let’s do <br />  something together !</h1>
+                        <p>Connecting Dogs, Creating Bonds: Where Canine Companionship Begins</p>
+                    </div>
 
-            <section className="right-side block-area">
-                {
-                    !userdata._id &&
-                                        <nav>
-                                        <Link to='/registration'>Registration</Link>
-                                        <Link to='/Login'>Login</Link>
-                                        </nav>
-                }
-              
-            </section>
+                    <div className='bottomBlock'>
+                        <img src={dogimg}/>
+                        <div className='btnBlock'>
+                            <div className='lighthrt'>
+                                <img src={lightHeart}/>
+                                <p>Best way to get puppies for your Dog</p>
+                            </div>
+
+                            <Link  to='/search'>Let's start</Link>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div className='rightSide'>
+                    <img src={mockup}/>
+                </div>
+
+                <Link className='startntm' to='/search'>Let's start</Link>
+
+            </div>
         </div>
         {userdata._id && <MobileMenuContainer/>}
         </>

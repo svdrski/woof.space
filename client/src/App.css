@@ -139,22 +139,23 @@ h3{
   }
 
   header{
-    height: 50px !important;
-        padding: 0 12px;
-    border-radius: 0 0 18px 18px !important;
+    height: 65px !important;
+    padding: 0 12px;
+    border-radius: 18px;
+    margin-top: 2px;
   }
 
   .headerlogo{
-    height: 26px;
+    height: 30px;
     }
 
   .profileimage{
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
   }
 
   .rightnav h3{
-    font-size: 15px;
-    margin: 5px -5px 0 0;
+    font-size: 18px;
+    margin: 9px -5px 0 0;
   }
 }

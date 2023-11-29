@@ -265,8 +265,7 @@
         overflow: hidden;
         border-radius: 18px;
         margin-bottom: 70px;
-        min-height: 130px !important;
-        height: calc(100vh - 123px) !important;
+        min-height: 540px !important;
     }
 
     .filtersBox{

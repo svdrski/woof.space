@@ -12,12 +12,22 @@ const port = 3333
 const socketIO = require('socket.io')(server, {cors: { origin: process.env.CLIENTLINK, methods: ['GET', 'POST'], credentials: true}});
 require('dotenv').config(); 
 
+App.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://clientsite.onrender.com'); // Разрешить доступ с этого домена
+  res.header('Access-Control-Allow-Credentials', true); // Разрешить отправку куки
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'); // Разрешенные методы
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept'); // Разрешенные заголовки
+  next();
+});
+
 App.use(cors({ origin: process.env.CLIENTLINK, methods: ['GET', 'POST'], credentials: true,}))
 App.use(cookieParser());
 App.use(express.json())
 App.use(express.urlencoded({ extended: true }));
 App.use(express.static(path.join(__dirname, './')));
 App.use(Router)
+
+
 
 
 //connect to mongo

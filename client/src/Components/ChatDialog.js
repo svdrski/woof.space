@@ -58,7 +58,7 @@ export default function ChatDialog(){
             e.target.text.value = ''
 
             //!!!! MESSAGE
-        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email })
+        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:newTextValue })
 
         
     }
@@ -85,6 +85,8 @@ export default function ChatDialog(){
     //         })
     //     } )
     // },[])
+
+
 
     useEffect(() => {
         const handleResponse = async (data) => {
@@ -180,12 +182,13 @@ useEffect(()=>{
 // 6 Update opponent last messages 
 
 
+
 const handleUpdateLastMessage = useCallback((data) => {
     console.log('updateLastMessage', activefriend, data);
 
 
 
-    if (activefriend && data?.opponent === activefriend?.email) {
+    if (activefriend === null || data?.opponent === activefriend?.email) {
         setLastMessages((prev) => {
             return prev.map((item) =>
                 item.roomId === [userdata.email, data.opponent].sort().join('')
@@ -264,31 +267,31 @@ useEffect(() => {
 
 
 
-    useEffect(()=>{
-        socket.on('makeReaded',(data)=>{
-            console.log('makeReaded',activefriend, data)
+    // useEffect(()=>{
+    //     socket.on('makeReaded',(data)=>{
+    //         console.log('makeReaded',activefriend, data)
     
             
-            if(activefriend){
+    //         if(activefriend){
         
     
-                console.log("NONNONONO", activefriend.email === data.opponent)
+    //             console.log("NONNONONO", activefriend.email === data.opponent)
     
-                if(activefriend && activefriend.email === data.opponent) {
+    //             if(activefriend && activefriend.email === data.opponent) {
             
-                    setTimeout(()=>{
-                        setMessages((prev)=>{
-                            return prev.map(item =>  ({...item, isReaded :true}))
-                        })
+    //                 setTimeout(()=>{
+    //                     setMessages((prev)=>{
+    //                         return prev.map(item =>  ({...item, isReaded :true}))
+    //                     })
                         
-                        socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
-                    }, 400)
-                }
-            }
+    //                     socket.emit('uploadToDbMsgDialog', {room: roomId, user: activefriend?.email, opponent: userdata.email})
+    //                 }, 400)
+    //             }
+    //         }
     
     
-        })
-    },[]) 
+    //     })
+    // },[]) 
 
 
 

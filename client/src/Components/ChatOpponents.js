@@ -89,6 +89,7 @@ export default function ChatOpponents (){
 
 
         socket.emit('createDialog', fullId)
+        console.log('Установится для id>', item.email, 'recipientEmail', userdata.email)
         socket.emit('setReaded', {opponent: item.email, user: userdata.email})
         setExtraOpponent({})
     }
@@ -152,9 +153,21 @@ export default function ChatOpponents (){
  
 
 
+    async function getOpponents (){
+        const dataList = await axios.post(`${URL}/chat/users`, {matches})
+        setFriendsList(dataList.data)
+        //call to get online list
+        socket.emit('setUserOnline', userdata.email);
+        setlastMsgAccept(true)
+        console.log('33')
+
+    }
 
 
 
+    useEffect(()=>{
+        matches.length > 0 && getOpponents ()
+    }, [matches])
 
 
 
@@ -217,7 +230,7 @@ export default function ChatOpponents (){
                 ))}
 
             </div>
-            <button onClick={()=>{console.log(extraOpponent)}}>Show</button>
+            <button onClick={()=>{console.log(lastMessages)}}>Show</button>
 
         </div>
     )

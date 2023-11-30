@@ -335,6 +335,10 @@ color: #7c7c7c !important;
 
 @media (max-width: 1030px) {
 
+    .enter{
+        font-size: 18px;
+    }
+
     .emptyMsg, .noresults{
         margin: 0 auto;
         height: 270px;

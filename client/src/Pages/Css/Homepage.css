@@ -157,7 +157,7 @@ nav a {
 @media (max-width: 1030px) {
 
     .logvh{
-        margin-bottom: 70px;
+        margin-bottom: 70px !important;
         margin-top: 2px !important;
         border-radius: 20px;
     }

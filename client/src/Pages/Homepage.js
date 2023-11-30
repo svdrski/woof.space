@@ -43,8 +43,8 @@ export default function Homepage (){
                                 <img src={lightHeart}/>
                                 <p>Best way to get puppies for your Dog</p>
                             </div>
+                            <a href="https://wooff.space/search">Let's start</a>
 
-                            <Link  to='/search'>Let's start</Link>
 
                         </div>
                     </div>
@@ -55,8 +55,8 @@ export default function Homepage (){
                 <div className='rightSide'>
                     <img src={mockup}/>
                 </div>
+                <a className='startntm' href="https://wooff.space/search">Let's start</a>
 
-                <Link className='startntm' to='/search'>Let's start</Link>
 
             </div>
         </div>

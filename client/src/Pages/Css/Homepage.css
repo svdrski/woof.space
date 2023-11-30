@@ -53,6 +53,7 @@ nav a {
 
 .logvh{
     min-height: 89vh;
+
 }
 
 .headerContainer h1{
@@ -155,6 +156,12 @@ nav a {
 
 @media (max-width: 1030px) {
 
+    .logvh{
+        margin-bottom: 70px;
+        margin-top: 2px !important;
+        border-radius: 20px;
+    }
+
     .startntm{
         display: block;
         margin: 60px auto;
@@ -162,6 +169,7 @@ nav a {
     .mainBox{
         flex-wrap: wrap;
         width: 100%;
+        margin-top: 40px;
     }
 
     .contContainer{
@@ -204,5 +212,9 @@ nav a {
 
     .rightSide img{
         max-width: 100%;
+    }
+
+    .navigate{
+        padding: 0 10px;
     }
 }

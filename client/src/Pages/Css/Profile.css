@@ -4,6 +4,22 @@
     height: 550px;
 }
 
+
+.profileMainContainer{
+
+        height: calc(100vh - 74px);
+        background-color: #F7F7F7;
+        width: 99%;
+        margin: 2px auto;
+        border-radius: 40px;
+        padding: 30px;
+        box-sizing: border-box;
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        position: relative;
+}
+
 .profileMainPhoto{
     width: 62%;
     object-fit: cover;
@@ -26,6 +42,17 @@
     object-fit: cover;
     width: 100%;
     border-radius: 40px;
+}
+
+.profllogout{
+    background-color: #6b6b6b;
+    font-size: 15px;
+    padding: 5px 20px;
+    color: #fff;
+    border-radius: 20px;
+    position: relative;
+    border: none;
+    margin: 50px 0 0 30px;
 }
 
 .personalInfo{
@@ -140,6 +167,11 @@
 }
 
 
+.profllogout{
+    display: none;
+}
+
+
 @media (max-width: 1030px) {
     .imgblockProfile{
         width: 100%;
@@ -147,6 +179,11 @@
         padding: 10px;
 
     }
+
+
+.profllogout{
+    display: block;
+}
 
     .personalInfo{
         min-width: 100%;
@@ -167,11 +204,22 @@
     margin-bottom: 20px;
     padding-bottom: 60px;
     }
-
+    .profileMainContainer{
+        padding: 0;
+        align-content: flex-start;
+        border-radius: 20px;
+        margin-bottom: 100px;
+        padding-bottom: 30px;
+        
+    }
 
 }
 
 @media (max-width: 600px) {
+
+
+
+
     .imgblockProfile{
         height: 50%;
 
@@ -180,7 +228,8 @@
     .profileContainer{
         align-content: flex-start;
         border-radius: 20px;
-        padding-bottom: 100px;
+        margin-bottom: 100px;
+        padding-bottom: 30px;
 }
 
 

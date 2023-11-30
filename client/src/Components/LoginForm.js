@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { useEffect, useState, useContext } from 'react'
+import { useState } from 'react'
 import errimg from '../Img/err.svg'
 import { Link, useNavigate } from 'react-router-dom'
-import { cookies } from '../App'
 const URL = process.env.REACT_APP_BASE_URL
 
 
@@ -14,7 +13,6 @@ export default function LoginForm (){
     async function formSaver (e){
         e.preventDefault()
         setMessage('')
-
         const data = Object.fromEntries(new FormData(e.target))
         try{
              const user = await axios.post(`${URL}/login`, data, {
@@ -22,21 +20,12 @@ export default function LoginForm (){
                 withCredentials: true
             } )
            if(user) {
-            console.log("ПОЛЬЗОВАОТ", user)
             navigate('/search')
         }
         } catch(e) {
             setMessage(e.response?.data)
         }
-
     }
-
-    // useEffect(()=>{
-    //     const myCookieValue = cookies.get('token');
-    //     if(myCookieValue) {navigate('/search')}
-    
-    // },[])
-
 
 
     return(
@@ -44,7 +33,6 @@ export default function LoginForm (){
             <div className="headerBlock">
                 <h3>Login</h3>
             </div>
-
             <div className="formArea">
                 <form onSubmit={formSaver}>
                         <label htmlFor='email'>Email</label>
@@ -52,14 +40,13 @@ export default function LoginForm (){
                         <label htmlFor='password'>Password</label>
                         <input className='inp'   type="password" name='password' required/>
                 
-                     {message && <span><img src={errimg}/> <p>{message}</p></span>}
+                     {message && <span><img alt='errimg' src={errimg}/> <p>{message}</p></span>}
 
                      <span className='navbtns'>
                          <input type='submit' className="formNextbtn submitreg" value='Login'></input>
                      </span>
                 </form>
             </div>
-
             <Link className='loginLInks' to='/registration'>Don't have account ? Registration</Link>
 
         </div>

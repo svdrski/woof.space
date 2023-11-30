@@ -10,35 +10,40 @@ class AuthController {
 
 
     static async AllUsers(req, res) {
-        const token = req.cookies.token
-        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
-            if(err){return res.status(401).send('Auth failed')}
-            const users = await AuthModel.GetAll(decoded.email)
-            res.status(201).send(users)
-        })
-
+        try{
+            const token = req.cookies.token
+            jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
+                if(err){return res.status(401).send('Auth failed')}
+                const users = await AuthModel.GetAll(decoded.email)
+                res.status(201).send(users)
+            })
+        }catch (e) {res.send('Error ' + e)}
     }
 
     static  Auth  (req, res) {
-        const token = req.cookies.token
-        jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
-            if(err){return res.status(401).send('Auth failed')}
-            const user = await AuthModel.CheckEmail(decoded.email)
-            res.status(201).send(...user)
-        })
+        try{
+            const token = req.cookies.token
+            jwt.verify(token, `${KEY}` ,async (err, decoded)=>{
+                if(err){return res.status(401).send('Auth failed')}
+                const user = await AuthModel.CheckEmail(decoded.email)
+                res.status(201).send(...user)
+            })
+        }catch (e) {res.send('Error ' + e)}
     }
 
 
 
     static async Login (req, res)  {
-        const {email, password} = req.body
-        const user = await AuthModel.CheckEmail(email)
-        if(!email || !password) {return res.status(409).send('Empty fields')}
-        if(!user.length) {return res.status(409).send('Email not found')}
-        if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
-        const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
-        res.cookie('token', token, {   httpOnly: true, sameSite: 'None', secure: true });
-        res.status(200).send('ok')
+        try{
+            const {email, password} = req.body
+            const user = await AuthModel.CheckEmail(email)
+            if(!email || !password) {return res.status(409).send('Empty fields')}
+            if(!user.length) {return res.status(409).send('Email not found')}
+            if(!bcrypt.compareSync(password, user[0].password)){return res.status(409).send('Wrong password')}
+            const token = await jwt.sign({email}, `${KEY}`, {expiresIn: '1h'})
+            res.cookie('token', token, {   httpOnly: true, sameSite: 'None', secure: true });
+            res.status(200).send('ok')
+        }  catch (e) {res.send('Error ' + e)}
     }
 
 

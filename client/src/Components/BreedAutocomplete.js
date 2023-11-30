@@ -28,7 +28,6 @@ const AutoCompleteBreed = ({setFormData, formData}) => {
 
   const handleChange = (selectedOption) => {
     setFormData({ ...formData, breed: selectedOption.value, });
-    console.log(formData);
   };
 
   return (

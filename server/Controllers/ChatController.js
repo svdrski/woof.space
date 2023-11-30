@@ -6,9 +6,12 @@ const { Server } = require('socket.io');
 class ChatController {
 
     static async GetOpponents (req, res){
-        const {matches} = req.body
-        const list = await ChatModel.getOpponents(matches)
-        res.send(list)
+        try{
+            const {matches} = req.body
+            const list = await ChatModel.getOpponents(matches)
+            res.send(list)
+        } catch (e) {res.send('Error ' + e)}
+
     }
 
 
@@ -20,7 +23,6 @@ class ChatController {
             socket.join(chatRoom)
 
             io.to(socket.id).emit('ChatInit', {chatRoom})
-
         })
     }
 

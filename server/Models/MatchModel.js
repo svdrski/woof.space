@@ -5,9 +5,7 @@ const LikeSchema = new mongoose.Schema({
     user: String,
     opponent: String,
     matched: String,
-    //для определения тех кто был в выборе
     isChosen: { type: Boolean, default: false },
-    //для опредения лайк или нет 
     isDisliked: { type: Boolean, default: false },
 })
 
@@ -28,19 +26,8 @@ class MatchModel {
 
         if(breed){Conditions.breed = breed}
         try {
-            const usersWithoutMatches = await User.aggregate([
-                {
-                    $match: Conditions, // Исключаем текущего пользователя из результатов
-                },
-                {
-                    $lookup: {
-                        from: 'matches',
-                        let: { currentUser: '$email' },
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $and: [
+            const usersWithoutMatches = await User.aggregate([{$match: Conditions,},
+                {$lookup: { from: 'matches', let: { currentUser: '$email' }, pipeline: [{$match: {$expr: {$and: [
                                             { $eq: ['$opponent', '$$currentUser'] },
                                             { $eq: ['$isChosen', true] },
                                             { $eq: ['$user', email] },
@@ -52,16 +39,10 @@ class MatchModel {
                         as: 'matches',
                     },
                 },
-                {
-                    $match: { 'matches.0': { $exists: false } },
-                },
-                {
-                    $project: { matches: 0 },
-                },
+                {$match: { 'matches.0': { $exists: false } },},
+                {$project: { matches: 0 },},
             ]);
-    
-            // console.log(usersWithoutMatches.length)
-            return usersWithoutMatches;
+        return usersWithoutMatches;
         } catch (error) {
             console.error('Error:', error);
             throw error;
@@ -70,8 +51,6 @@ class MatchModel {
     
     
     
-    
-
 
       static async getMatches (email, breed) {
         try {
@@ -92,10 +71,8 @@ class MatchModel {
         if(!isAlreadyMatched) {
             const newChoose = new Matches({user, opponent, isChosen: true})
             const newchoose = await newChoose.save()
-            // console.log(newchoose)
         } else {
             if(isAlreadyMatched.isDisliked) {
-                // console.log('DISSSSLOKE')
                 const newUser = await new Matches ({user, opponent, isChosen: true})
                 const savedUser = newUser.save()
                 return
@@ -103,14 +80,12 @@ class MatchModel {
             const newUser = await new Matches ({user, opponent, matched: opponent, isChosen: true})
             const savedUser = newUser.save()
             const updatedOpponent = await Matches.updateOne({user: opponent, opponent: user}, {matched: user, isChosen: true})
-            // console.log('DATA',savedUser,  updatedOpponent)
         }
         const updatedUser  = await User.updateOne({email:user}, {$inc: {attempts:1}})
     }
 
 
     static async disLike (user, opponent){
-        console.log('DISLIKE')
             const newDislike = new Matches({user, opponent, isChosen: true,  isDisliked: true })
             const newchoose = await newDislike.save()
             const updatedUser = await User.updateOne({email: user}, {$inc: {attempts: 1}});

@@ -191,8 +191,6 @@ cursor: pointer;
 }
 
 
-
-
 .photolabel{
     box-sizing: border-box;
     width: calc(50% - 8px);
@@ -222,7 +220,6 @@ cursor: pointer;
     cursor: pointer;
     color: #fff;
 }
-
 
 
 @media (max-width: 500px) {

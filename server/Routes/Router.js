@@ -25,7 +25,7 @@ Router.post('/profile/get/:id',verify, ProfileController.Get )
 
 
 Router.get('/check', (req, res)=>{
-    res.send('RABOTAET')
+    res.send('SERVER IS WORKING')
 })
 
 

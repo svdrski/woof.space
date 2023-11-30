@@ -15,18 +15,12 @@ const userSchema = new mongoose.Schema({
   attempts: {type: Number, default: 0}
 });
 
-
-
  const User = mongoose.model('users', userSchema);
-
-
-
 
 class AuthModel {
 
     static async GetAll(email){
         const users = await User.find({email: {$ne: email} })
-        // console.log(users)
         return users;
     }
 
@@ -49,11 +43,6 @@ class AuthModel {
         try{
             const newUser = new User({password, name, email,dogname, breed, age, gender, description,city, photos: photosArr})
             const savedUser = await newUser.save()
-            // console.log(savedUser)
-
-            // const newPhotos = new Photos({email, photos: photosArr})
-            // const savedPhotos = await newPhotos.save()
-            // console.log(savedPhotos)
             return savedUser
         } catch (e) {return e}
        

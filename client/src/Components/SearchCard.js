@@ -7,8 +7,6 @@ const URL = process.env.REACT_APP_BASE_URL
 
 export default function SearchCard ({data, like, dislike}) {
 
-    console.log(data)
-
     return(
         
         <div style={{background: `url(${URL}/${data?.photos[0].slice(2, data.photos[0].length)})`}} className="cardBox">
@@ -18,7 +16,7 @@ export default function SearchCard ({data, like, dislike}) {
                      <h1>{data.dogname}</h1>
                      <p>{data.age} y.o, {data.breed}</p>
                      <span className="citySpan">
-                        <img src={locationImg}/>
+                        <img alt='locationImg' src={locationImg}/>
                         <p className="city">{data.city}</p>
                      </span>
                 </div>

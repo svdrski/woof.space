@@ -1,9 +1,8 @@
 import axios from 'axios'
 import '../Pages/Css/Chat.css'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useMyContext } from '../Components/UserDataContext';
 import { useMessengerContext } from '../Components/Context/MessengerContext';
-import { useParams, useNavigate } from 'react-router-dom';
 
 import socket from './Socket';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,28 +12,19 @@ const URL = process.env.REACT_APP_BASE_URL
 
 export default function ChatOpponents (){
 
-    const { id } = useParams();
-    const navigate = useNavigate();
-
-
-
     const {userdata} = useMyContext()
-
     const {matches,friendsList, sethideOnmobile,extraOpponent,  hideOnmobile,setExtraOpponent, setlastMsgAccept,setacfriendAccept, setFriendsList, setActivefriend, activefriend, roomId, setRoomId, messsages, setMessages, lastMessages, setLastMessages, UnreadedMessages, setUnreadedMessages} =  useMessengerContext()
  
-
 
     // Update friends list - online/offline
 
     socket.on('onlineList', (data) => {
-
         //set all  offline
         setFriendsList((prevFriendsList) => {
             return prevFriendsList.map((user) => {
                 return { ...user, isOnline: false };
             });
         });
-        
         
         // set online as online
         setFriendsList((prevFriendsList) => {
@@ -51,10 +41,8 @@ export default function ChatOpponents (){
 
 
 
-
-
+    // Create room with choosen friend
      function setOpponentmsg (item){
-        console.log('УСТАНОВИЛСЯ', item)
         setActivefriend(item)
         setacfriendAccept(true)
         socket.emit('leaveRoom', roomId);
@@ -62,41 +50,16 @@ export default function ChatOpponents (){
         const id = [userdata.email, item.email].sort().join('')
         const fullId = {user: userdata.email, roomId:id}
         setRoomId(id)
-      
         sethideOnmobile(true)
 
-   
         UnreadedMessages.length &&  setUnreadedMessages((prev)=>{
-            console.log('2')
             return prev.filter(msg => msg.id !== item.email )
         })
 
-
         socket.emit('createDialog', fullId)
-        console.log('Установится для id>', item.email, 'recipientEmail', userdata.email)
         socket.emit('setReaded', {opponent: item.email, user: userdata.email, roomId:id})
         setExtraOpponent({})
     }
-
- 
-
-    useEffect(()=>{
-        if(extraOpponent._id) {
-            console.log('EСТЬЬЬ', extraOpponent)
-            setOpponentmsg(extraOpponent)
-        }
-    },[])
-
-
-    useEffect(()=>{
-        console.log('STOORY')
-        socket.on('messagesStory', (data)=>{
-            setMessages(data)
-        })
-    }, [])
-  
-  
-
 
     function unreadedFirst(){
         friendsList.sort((a, b) => 
@@ -104,28 +67,37 @@ export default function ChatOpponents (){
         UnreadedMessages.filter(msg => msg.id === a.email).length 
     );
     }
- 
-      
-    useEffect(()=>{
-        unreadedFirst()
-    }, [UnreadedMessages])
-
-
-
-
- 
-
 
     async function getOpponents (){
         const dataList = await axios.post(`${URL}/chat/users`, {matches})
         setFriendsList(dataList.data)
-        //call to get online list
         socket.emit('setUserOnline', userdata.email);
         setlastMsgAccept(true)
-        console.log('33')
-
     }
 
+
+
+
+
+ 
+
+    useEffect(()=>{
+        if(extraOpponent._id) {
+            setOpponentmsg(extraOpponent)
+        }
+    },[])
+
+
+    useEffect(()=>{
+        socket.on('messagesStory', (data)=>{
+            setMessages(data)
+        })
+    }, [])
+  
+      
+    useEffect(()=>{
+        unreadedFirst()
+    }, [UnreadedMessages])
 
 
     useEffect(()=>{

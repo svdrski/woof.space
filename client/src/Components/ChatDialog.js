@@ -7,18 +7,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
 import readed from '../Img/readed.svg'
 import unreaded from '../Img/unread.svg'
-
-
-
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 
 
 
-
-
-
-const sendicon = import ('../Img/sendbtn.svg')
 const URL = process.env.REACT_APP_BASE_URL
 
 
@@ -36,137 +29,42 @@ export default function ChatDialog(){
       setShowEmojiPicker(!showEmojiPicker);
     };
   
-    const handleEmojiSelect = (emoji) => {
-        console.log(data)
-      // Вставка выбранного emoji в текущий текст сообщения
-    };
 
-    
+///  Send Message 
+const sender = (e) =>{
+    e.preventDefault()
+        const currentTime = new Date();
+        const hours = currentTime.getHours().toString().padStart(2, '0');
+        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+        const time = `${hours}:${minutes}`;
 
+        message.length > 0 && socket.emit('message', {
+            text: message,
+            name: userdata.name,
+            id: userdata.email,
+            recipientEmail: activefriend.email,
+            SocketID: socket.id,
+            roomId: roomId,
+            time
+        })
 
-    let newTextValue = ''
+        setUnreadedMessages((prev)=>{
+            return []
+        })
 
+    setLastMessages((prev) => {
+        return prev.map((item) =>
+            item.roomId === [userdata.email, activefriend.email].sort().join('')
+                ? { ...item, text: message }
+                : item
+        );
+    });
+    setMessage('')
+    socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:message })
 
+}
 
-    /// 1.  Send Message 
-    const sender = (e) =>{
-        e.preventDefault()
-
-            const currentTime = new Date();
-            const hours = currentTime.getHours().toString().padStart(2, '0');
-            const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-            const time = `${hours}:${minutes}`;
-
-            message.length > 0 && socket.emit('message', {
-                text: message,
-                name: userdata.name,
-                id: userdata.email,
-                recipientEmail: activefriend.email,
-                SocketID: socket.id,
-                roomId: roomId,
-                time
-            })
-
-            setUnreadedMessages((prev)=>{
-                return []
-            })
-
-        setLastMessages((prev) => {
-            return prev.map((item) =>
-                item.roomId === [userdata.email, activefriend.email].sort().join('')
-                    ? { ...item, text: message }
-                    : item
-            );
-        });
-            setMessage('')
-
-            //!!!! MESSAGE
-        socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:message })
-
-        
-    }
-
-    // const sender = (e) =>{
-    //     e.preventDefault()
-
-    //         const currentTime = new Date();
-    //         const hours = currentTime.getHours().toString().padStart(2, '0');
-    //         const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-    //         const time = `${hours}:${minutes}`;
-    //         newTextValue = newTextValue + e.target.text.value
-
-    //         newTextValue.length > 0 && socket.emit('message', {
-    //             text: e.target.text.value,
-    //             name: userdata.name,
-    //             id: userdata.email,
-    //             recipientEmail: activefriend.email,
-    //             SocketID: socket.id,
-    //             roomId: roomId,
-    //             time
-    //         })
-
-    //         setUnreadedMessages((prev)=>{
-    //             return []
-    //         })
-
-    //     setLastMessages((prev) => {
-    //         return prev.map((item) =>
-    //             item.roomId === [userdata.email, activefriend.email].sort().join('')
-    //                 ? { ...item, text: newTextValue }
-    //                 : item
-    //         );
-    //     });
-    //         e.target.text.value = ''
-
-    //         //!!!! MESSAGE
-    //     socket.emit('updateOppDialogPrev', { id:activefriend.email, opponent: userdata.email, message:newTextValue })
-
-        
-    // }
-
-
-
-
-
-
-    // Получение ответа 
-    useEffect(() => {
-        const handleResponse = async (data) => {
-            console.log('ЗДЕСЬ', activefriend);
-    
-            await setMessages((prevMessages) => [...prevMessages, data]);
-    
-            setFriendsList((prev) => prev.map((item) => item));
-    
-            ////???????????????
-            activefriend &&
-                UnreadedMessages.length &&
-                setUnreadedMessages((prev) => {
-                    console.log('3');
-                    return prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
-                });
-        };
-    
-        socket.on('response', handleResponse);
-    
-        // Блок очистки эффекта
-        return () => {
-            socket.off('response', handleResponse);
-        };
-    }, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
-    
-
-
-    
-  
-
-//3 call to get last Message to preview
-useEffect(()=>{
-    lastMsgAccept && friendsList.length > 0 && getLastMessages()
-},[lastMsgAccept])
-
-
-//4 Function to call last messages
+//Function to call last messages
 async function getLastMessages (){
     console.log('getLastMessages')
 
@@ -180,31 +78,9 @@ async function getLastMessages (){
     socket.emit('getLastMessages', roomId)
 }
 
-// useEffect(()=>{
-//     getLastMessages()
-// },[])
 
-//5 update last massages after response 
-
-useEffect(()=>{
-    socket.on('lastMsgList',(data)=>{
-        setLastMessages((prev) => {
-            return [...prev, ...data];
-        })
-        console.log('lastMsgList', data)
-    })
-},[])
-
-
-// 6 Update opponent last messages 
-
-
-
+//  Update opponent last messages 
 const handleUpdateLastMessage = useCallback((data) => {
-    console.log('updateLastMessage', activefriend, data);
-
-
-
     if (activefriend === null || data?.opponent === activefriend?.email) {
         setLastMessages((prev) => {
             return prev.map((item) =>
@@ -213,10 +89,55 @@ const handleUpdateLastMessage = useCallback((data) => {
                     : item
             );
         });
-
         socket.emit('readedNow', { opponent: data.opponent, room: roomId, user: userdata.email });
     }
 }, [activefriend, setLastMessages, userdata.email, roomId]);
+
+
+const isTyping = () => {
+    socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
+}
+
+// Catch message 
+useEffect(() => {
+    const handleResponse = async (data) => {
+        await setMessages((prevMessages) => [...prevMessages, data]);
+        setFriendsList((prev) => prev.map((item) => item));
+            activefriend &&
+            UnreadedMessages.length &&
+            setUnreadedMessages((prev) => {
+                return prev.map((msg) => (msg.id === activefriend?.email ? { ...msg, isReaded: true } : msg));
+            });
+    };
+    socket.on('response', handleResponse);
+
+    return () => {
+        socket.off('response', handleResponse);
+    };
+}, [activefriend, setMessages, setFriendsList, setUnreadedMessages]);
+
+
+
+    
+
+//call to get last Message to preview
+useEffect(()=>{
+    lastMsgAccept && friendsList.length > 0 && getLastMessages()
+},[lastMsgAccept])
+
+
+
+// update last massages after response 
+useEffect(()=>{
+    socket.on('lastMsgList',(data)=>{
+        setLastMessages((prev) => {
+            return [...prev, ...data];
+        })
+    })
+},[])
+
+
+
 
 useEffect(() => {
     socket.on('updateLastMessage', handleUpdateLastMessage);
@@ -227,84 +148,44 @@ useEffect(() => {
 
 
 
+useEffect(()=>{
+    socket.on('respTyping', (data)=> {
+        setStatus(data)
+        })
+        setTimeout(()=>{
+            setStatus('')
+        }, 2000)
+},[status])
 
-    
+ 
 
+//    Update messages if both opened dialog
 
-
-
-    const isTyping = () => {
-        console.log("TYPING")
-        socket.emit('typing', {roomId, message:`${userdata.name} is typing...` } )
+useEffect(() => {
+const handleMakeReaded = (data) => {
+    if (activefriend && activefriend.email === data.opponent) {
+        setTimeout(() => {
+            setMessages((prev) => {
+                return prev.map((item) => ({ ...item, isReaded: true }));
+            });
+            socket.emit('uploadToDbMsgDialog', { room: roomId, user: activefriend?.email, opponent: userdata.email });
+        }, 400);
     }
-    
+};
+socket.on('makeReaded', handleMakeReaded);
 
-    useEffect(()=>{
-        socket.on('respTyping', (data)=> {
-
-            console.log("TYPI22NG")
-            setStatus(data)
-            })
-    
-            setTimeout(()=>{
-                console.log('STATUS')
-                setStatus('')
-            }, 2000)
-    },[status])
-
- 
-
-
-
-
- 
-
-
-
-
-
-
-
-
-
-
-//    обновить сообщения если у обоих открыты диалоги
-
-   useEffect(() => {
-    const handleMakeReaded = (data) => {
-        console.log('ПРОЧИТАТЬ!!!!!', activefriend, data);
-
-        if (activefriend && activefriend.email === data.opponent) {
-            setTimeout(() => {
-                setMessages((prev) => {
-                    return prev.map((item) => ({ ...item, isReaded: true }));
-                });
-
-                console.log("SAAVEED", roomId)
-                socket.emit('uploadToDbMsgDialog', { room: roomId, user: activefriend?.email, opponent: userdata.email });
-            }, 400);
-        }
-    };
-
-    socket.on('makeReaded', handleMakeReaded);
-
-    return () => {
-        // Очищаем обработчик при размонтировании компонента или изменении activefriend
-        socket.off('makeReaded', handleMakeReaded);
-    };
+return () => {
+    socket.off('makeReaded', handleMakeReaded);
+};
 }, [activefriend, setMessages, roomId, userdata.email, socket]);
 
  
 
 
-
-
-
-//Cделать все сообщения прочитанными в диалоге
+//Make all messages as unreaded
 
 useEffect(()=>{
     socket.on('finisgMsgUpdate', (data) => {
-        console.log("HUINA");
         setMessages((prev)=>{
             return prev.map(item =>  ({...item, isReaded :true}))
         })
@@ -312,20 +193,14 @@ useEffect(()=>{
 },[])
 
 
+// SHow the last message on the dialog window
+useEffect(() => {
+    if (dialogRef.current) {
+        dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
+    }
+}, [messsages]);
 
 
-    // SHow the last message on the dialog window
-    useEffect(() => {
-        if (dialogRef.current) {
-          dialogRef.current.scrollTop = dialogRef.current.scrollHeight;
-        }
-      }, [messsages]);
-
-
-
-
-
-    
 
     return(
         activefriend ?
@@ -347,11 +222,10 @@ useEffect(()=>{
                             item.name === userdata.name ? (
                             <div className='linemsg' key={uuidv4()}>
                             <div className='chatMsg msgSender'>
-                                {/* <p className='sender'>{userdata?.name}</p> */}
                                 <p>{item.text}</p>
                                 <div className='flexStatus'>
                                     <span className='sendTime'>{item.time}</span>
-                                    {item.isReaded ? <img src={readed}/>  : <img src={unreaded}/> }
+                                    {item.isReaded ? <img alt='img' src={readed}/>  : <img alt='img' src={unreaded}/> }
                                 </div>
 
                             </div>
@@ -359,12 +233,10 @@ useEffect(()=>{
                             ) : (
                             <div className='linemsg' key={uuidv4()}>
                             <div className='chatMsg'>
-                                {/* <p className='enemy sender'>{item?.name}</p> */}
                                 <p>{item?.text}</p>
-                            
                             <div className='flexStatus'>
                                 <span className='sendTime'>{item.time}</span>
-                                {item.isReaded ? <img src={readed}/> : <img src={unreaded}/> }
+                                {item.isReaded ? <img alt='img' src={readed}/> : <img alt='img' src={unreaded}/> }
                             </div>
 
                             </div>
@@ -380,24 +252,18 @@ useEffect(()=>{
 
             <span className={showEmojiPicker ? "emojiActive" : "emojiDisable"}>
                 <Picker  data={data} onEmojiSelect={(e)=>{
-
-                    setMessage((prev)=>{
-                        return prev + e.native
-                    })
-                    // newTextValue += e.native
-                    
+                        setMessage((prev)=>{
+                            return prev + e.native
+                        })
                     }} />
             </span>
             
            
             <form className='sendmsg' onSubmit={sender}>
                 <input className='enter' value={message} onKeyDown={isTyping} onChange={(e)=>{setMessage(e.target.value)}} name='text'  type="text"/>
-                <img onClick={toggleEmojiPicker} className='imgEmoj' src={emojiIcn}/>
+                <img alt='img'  onClick={toggleEmojiPicker} className='imgEmoj' src={emojiIcn}/>
                 <input type='submit' className='sendbtn' value=''/>
             </form>
-            {/* <button onClick={()=>{console.log(messsages)}}>freind</button> */}
-
-            
         </div>
         :
 

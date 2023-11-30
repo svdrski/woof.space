@@ -10,28 +10,28 @@ const URL = process.env.REACT_APP_BASE_URL
 export default function FriendProfile (){
 
     const { id } = useParams();
+
     const [user, setUser] = useState('')
 
-
-
-
+    
     const saver = async ()=>{
-        const response =  await axios.post(`${URL}/profile/get/${id}`, null ,{
-            headers: {"Contet-Type" : "application/json"},
-            withCredentials: true
-        })
+        try{
+            const response =  await axios.post(`${URL}/profile/get/${id}`, null ,{
+                headers: {"Contet-Type" : "application/json"},
+                withCredentials: true
+            })
+    
+            if(response.status === 200) {
+                console.log(response.data)
+                setUser(response.data)
+            }
+        } catch(e) {console.log('Error ', e)}
 
-        if(response.status === 200) {
-            console.log(response.data)
-            setUser(response.data)
-        }
     }
 
     useEffect(()=>{
         saver()
     },[])
-
-    console.log(user)
 
 
     return(

@@ -20,7 +20,6 @@ const message = mongoose.model('message', messageShema)
 let onlineUsers = []
 
 function initSocket(socketIO) {
-  
 socketIO.on('connection', (socket)=>{
 
   console.log('User', socket.id, 'Connected')
@@ -29,18 +28,13 @@ socketIO.on('connection', (socket)=>{
   socket.on('setUserOnline', async (data) => {
      if(!onlineUsers.some(item => item.user === data)) {await onlineUsers.push({user: data, id:socket.id})}
     socketIO.emit('onlineList', onlineUsers)
-
     const NotReadedMsg = await message.find({recipientEmail:data, isReaded:false})
     socket.emit('unreadedMessages', NotReadedMsg)
-    // console.log(NotReadedMsg)
   })
-
 
   socket.on('setReaded', async (data) => {
     const updateReaded = await message.updateMany({id: data.opponent, recipientEmail: data.user},{isReaded: true})
-
     socketIO.to(data.roomId).emit('finisgMsgUpdate', data)
-    ///СЮДА
   })
 
   
@@ -51,16 +45,11 @@ socketIO.on('connection', (socket)=>{
       const save =  await newMessage.save()
       socketIO.to(data.roomId).emit('response', save);
 
-
-      console.log(data.recipientEmail, onlineUsers)
       const user = onlineUsers.find(item => item.user === data.recipientEmail)
     
     //отправить отправителю в стейт с нечитанными сообщение и запушить его вконец
     if (user){socketIO.to(user.id).emit('addUnreaded', save )}
-      // 
-
       socketIO.to(data.roomId).emit('UpdateReaded', save)
-
   } catch(e) {console.log(e)}
   });
 
@@ -68,7 +57,6 @@ socketIO.on('connection', (socket)=>{
   socket.on('saveReaded', async (data)=>{
     const result = await message.updateMany({_id: { $in: data }}, {isReaded: true}) 
   } )
-
 
   socket.on('readedNow', async (data) =>{
     console.log("FFFFFFFFFFF@@@")
@@ -81,7 +69,6 @@ socketIO.on('connection', (socket)=>{
      const user = onlineUsers.find(item => item.user === data.user)
     if (user){socketIO.to(user.id).emit('finisgMsgUpdate', data)}
   })
-
 
 
 

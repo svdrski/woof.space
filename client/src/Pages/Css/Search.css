@@ -22,16 +22,6 @@
 }
 
 
-.searchContainer{
-    /* width: 30%; */
-    /* max-width: 360px; */
-    /* padding: 30px; */
-    /* border: 1px solid#E6E6E6; */
-    /* border-radius: 40px; */
-}
-
-
-
 .searchContainer h3{
     margin: 5px 0px 18px 0px;
 }
@@ -235,20 +225,6 @@
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   @media (max-width: 1030px) {
 
     .noresultss{
@@ -265,7 +241,7 @@
         overflow: hidden;
         border-radius: 18px;
         margin-bottom: 70px;
-        min-height: calc(100vh - 221px);
+        min-height: calc(100vh - 141px);
             }
 
     .filtersBox{

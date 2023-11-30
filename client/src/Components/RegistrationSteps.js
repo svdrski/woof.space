@@ -1,18 +1,15 @@
 import AutoCompleteField from './CityAutocomplete'
 import AutoCompleteBreed from "./BreedAutocomplete";
-import { useState } from 'react';
-
 
 export default function RegistrationSteps ({step, formData, setFormData, func}){
 
+
     function changer(e){
         e.preventDefault()
-        console.log(formData)
         setFormData({...formData, [e.target.name]: e.target.value})
     }
     
     const {selectedFiles, handleFileChange} = func
-      
       
     
     return(

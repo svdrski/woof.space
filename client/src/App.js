@@ -11,7 +11,7 @@ import socket from './Components/Socket';
 import Profile from './Pages/Profile';
 import Cookies from 'universal-cookie';
 import FriendProfile from './Pages/FriendProfile';
-import { useState, useEffect } from 'react';
+import {  useEffect } from 'react';
 import { useMyContext } from './Components/UserDataContext';
 export const cookies = new Cookies();
 
@@ -22,18 +22,10 @@ function App() {
 
   const {userdata} = useMyContext()
 
-
-
+  //Update online status on serever
   useEffect(()=>{
     socket.emit('setUserOnline', userdata.email )
   })
-
-
-
-
-
-
-
 
 
   return (

@@ -265,8 +265,8 @@
         overflow: hidden;
         border-radius: 18px;
         margin-bottom: 70px;
-        min-height: calc(100vh - 141px);
-    }
+        min-height: calc(100vh - 191px);
+        }
 
     .filtersBox{
         width: 100%;

@@ -8,6 +8,5 @@ export default function Registration (){
         <RegistrationForm/>
         <div className='login-background'></div>
         </>
-
     )
 }

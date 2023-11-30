@@ -344,8 +344,8 @@ color: #7c7c7c !important;
     .chatcontainer{
         padding: 0;
         min-height: 100px !important;
-        height: calc(100vh - 138px) !important;
-    }
+        height: calc(100vh - 158px) !important;
+        }
 
     .chatFriends{
         width: 100%;

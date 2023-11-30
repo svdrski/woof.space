@@ -17,8 +17,6 @@ const URL = process.env.REACT_APP_BASE_URL
 
 export default function Search () {
 
-    const navigate = useNavigate();
-
 
     const {userdata} = useMyContext()
     const { breed, setBreed,

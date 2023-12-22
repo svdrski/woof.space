@@ -9,7 +9,7 @@ export default function SearchCard ({data, like, dislike}) {
 
     return(
         
-        <div style={{background: `url(${URL}/${data?.photos[0].slice(2, data.photos[0].length)})`}} className="cardBox">
+        <div style={{background: `url(${URL/data?.photos[0]?.slice(2, data.photos[0].length) || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRG0MB2PopO0k8g5gwKaPYdkyn-c8NzegRgwQ&usqp=CAU'})`}} className="cardBox">
             <div className="gradient-overlay">
      
                 <div className="info">

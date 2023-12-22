@@ -39,7 +39,7 @@ export default function RegistrationSteps ({step, formData, setFormData, func}){
                     <AutoCompleteBreed setFormData={setFormData} formData={formData}/>
 
                     <label htmlFor='age'>Age (max 20)</label>
-                    <input className='inp' type="number" onChange={changer} value={formData.age} name='age' required max="20"/>
+                    <input className='inp' type="number" min="1" max="20" onChange={changer} value={formData.age} name='age' required/>
 
                     <label htmlFor=''>Gender</label>
                     <span>
@@ -57,7 +57,7 @@ export default function RegistrationSteps ({step, formData, setFormData, func}){
                     <>
 
                     <div className='imgcontainer'>
-                    <label htmlFor="photos" className="photolabel"></label>
+                    <label htmlFor="photos" className="photolabel">Photos (1 - 3)</label>
                     <input type="file" style={{ display: 'none' }} onChange={handleFileChange} name="photos" id="photos" multiple/>
                         {selectedFiles.map((file, index) => (
                         <img className='previewImg' key={index} src={URL.createObjectURL(file)} alt={`Preview ${index}`} />
